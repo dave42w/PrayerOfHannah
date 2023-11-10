@@ -1,0 +1,4 @@
+DROP INDEX IF EXISTS idxAuthorName;
+
+DROP TABLE IF EXISTS Author;
+

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!--
+// Prayer of Hannah
+// Free Software to provide Slides as a web service for Worship, Noticeboards and more. 
+// Named in honour of Hannah (see 1 Samuel 2:1-10) and particularly from verse 8: 
+//"He raises up the poor from the dust; he lifts the needy from the ash heap" 
+// Copyright (C) 2023  Dave Warnock dwarnock@gmail.com
+
+// This program is free software: you can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License as published by the Free Software Foundation, 
+// either version 3 of the License, or (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+// See the GNU Affero General Public License for more details.
+
+// You should have received a copy of the GNU Affero General Public License along with this program.  
+// If not, see <http://www.gnu.org/licenses/>.
+
+// Source code at https://codeberg.org/Dave42W/PrayerOfHannah
+-->
+<html>
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible">  
+  <link rel="stylesheet" href="/static/PrayerOfHannah.css">  
+  <head><title>Prayer of Hannah: Collections (of Songs) Form</title>
+</head>
+<body>
+    <h1>Prayer of Hannah: Collections (of Songs) Display</h1>
+
+    <p>Collection Name: {{name}}</p>
+    <p>Collection Short Code: {{code}}</p>
+    <p>Collection URL: {{url}}</p>
+
+    <p>
+        <form style="display: inline;" action="/Collection/edit/{{id}}" method="GET" enctype="application/x-www-form-urlencoded">
+            <input style="display: inline;" type="submit" name="Submit" value="Edit" />
+        </form>
+        <form style="display: inline;" action="/Collection/delete/{{id}}" method="POST" enctype="application/x-www-form-urlencoded">
+            <input style="display: inline;" type="submit" name="Submit" value="Delete" />
+        </form>
+    </p>
+    <p><a href="/Collection">Back to Collection</a></p>
+    <p><a href="/">Home</a></p>
+    <p>Source code on <a href="https://codeberg.org">CodeBerg</a> at <a href="https://codeberg.org/Dave42W/PrayerOfHannah">PrayerOfHannah</a></p>
+
+
+    <h2>Songs in this collection</h2>
+    <table class="song_list">
+        <caption>Songs/Hymns</caption>
+        <thead>
+            <tr><th>Title</th><th>Number</th></tr>
+        </thead>
+        <tbody>
+            {{#each song}}
+                <tr>
+                    <th><a href="/Song/{{id}}">{{title}}</a></th>
+                    <td>{{number}}</td> 
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</body>
+</html>

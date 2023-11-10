@@ -1,0 +1,7 @@
+DROP INDEX IF EXISTS idxSongNumber;
+
+DROP INDEX IF EXISTS idxSongTitle;
+
+DROP TABLE IF EXISTS Song;
+
+

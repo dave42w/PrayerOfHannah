@@ -1,0 +1,15 @@
+body {
+    font-family: 'Atkinson Hyperlegible', serif;
+}
+
+table, th, td {
+  border: 1px solid gray;
+}
+
+table, th, td {
+    padding: 2px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #d3d3d3 ;
+}

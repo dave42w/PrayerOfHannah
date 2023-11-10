@@ -1,8 +1,45 @@
+# Prayer of Hannah
+# Free Software to provide Slides as a web service for Worship, Noticeboards and more. 
+# Named in honour of Hannah (see 1 Samuel 2:1-10) and particularly from verse 8: 
+# "He raises up the poor from the dust; he lifts the needy from the ash heap" 
+# Copyright (C) 2023  Dave Warnock dwarnock@gmail.com
+
+# This program is free software: you can redistribute it and/or modify it under the terms
+# of the GNU Affero General Public License as published by the Free Software Foundation, 
+# either version 3 of the License, or (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+# See the GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License along with this program.  
+# If not, see <http://www.gnu.org/licenses/>.
+
+# Source code at https://github.com/dave42w/PrayerOfHannah
+
 [package]
-name = "PrayerOfHannah"
-version = "0.1.0"
+name = "prayer_of_hannah"
+version = "0.3.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+axum = "0.6.20"
+chrono = { version = "0.4.31", features = ["serde"] }
+color-eyre = "0.6.2"
+dotenvy = "0.15.7"
+serde = { version = "1.0.192", features = ["derive"] }
+serde_json = "1.0.108"
+
+libsqlite3-sys = "0.26.0"
+rusqlite = { version = "0.29.0", features = ["bundled"] }
+sqlx = { version = "0.7.2", features = ["sqlite", "runtime-tokio", "chrono", "uuid", "macros"] }
+tokio = { version = "1.34.0", features = ["macros", "rt-multi-thread"] }
+tower-http = { version = "0.4.4", features = ["fs"] }
+uuid = { version = "1.5.0", features = ["v4", "serde"] }
+
+handlebars = { version = "4.4.0", features = ["dir_source"] }
+
+[profile.dev.package.sqlx-macros]
+opt-level = 3

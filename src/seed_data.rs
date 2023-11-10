@@ -20,6 +20,8 @@
 use sqlx::{Pool, Sqlite, Error, Transaction};
 use sqlx;
 
+use crate::models::song_collection;
+
 pub async fn seed(pool: &Pool<Sqlite>) -> Result<(), Error> {
     let mut txn: Transaction<'_, Sqlite> = pool.begin().await?;
     seed_collection(&mut txn).await?;
@@ -33,49 +35,27 @@ pub async fn seed(pool: &Pool<Sqlite>) -> Result<(), Error> {
  }
 
 pub async fn seed_collection(txn: &mut Transaction<'_, Sqlite>) -> Result<(), Error> {
-    insert_collection(txn,
+    song_collection::insert_after_code_check(txn, 
         "StF", 
         "Singing the Faith", 
         "https://www.methodist.org.uk/our-faith/worship/singing-the-faith-plus/"
     )
     .await.unwrap();
 
-    insert_collection(txn,
+    song_collection::insert_after_code_check(txn, 
         "H&P",
         "Hymns & Psalms",
         ""
     )
     .await.unwrap();
 
-    insert_collection(txn,
+    song_collection::insert_after_code_check(txn, 
         "SoF1",
         "Songs of Fellowship book 1",
         ""
     )
     .await.unwrap();
 
-    Ok(())
-}
-
-async fn insert_collection(txn: &mut Transaction<'_, Sqlite>, code: &str, name: &str, url: &str)  -> Result<(), Error> {
-    let rec = sqlx::query!("SELECT id from SongCollection where code = ?1", code)
-    .fetch_optional(&mut **txn).await?;
-
-    if rec.is_none() {
-        let id = uuid::Uuid::new_v4().to_string();
-        let now = chrono::Utc::now();
-
-        sqlx::query!(
-            r#"
-            INSERT INTO SongCollection 
-            (id, code, name, url, created_timestamp, updated_timestamp) 
-            VALUES
-            (?1, ?2, ?3, ?4, ?5, ?6)
-            "#, id, code, name, url, now, now)
-        .execute(&mut **txn)    
-        .await?;
-        print!(".");
-    }
     Ok(())
 }
 

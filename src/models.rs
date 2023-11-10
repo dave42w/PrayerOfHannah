@@ -17,7 +17,7 @@
 
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
-pub mod home;
+//pub mod home;
 pub mod song_collection;
 //pub mod author;
 //pub mod song;

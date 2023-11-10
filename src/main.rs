@@ -27,6 +27,7 @@ mod seed_data;
 mod routes;
 mod controllers;
 mod templates;
+mod models;
 
 #[derive(Clone)]
 pub struct AppState<'a> {

@@ -18,7 +18,7 @@
 // Source code at https://github.com/dave42w/PrayerOfHannah
 
 use handlebars::Handlebars;
-use sqlx::{sqlite, Pool, Sqlite};
+use sqlx::{sqlite, Pool, Sqlite, any::install_default_drivers};
 use dotenvy::dotenv;
 use std::env;
 
@@ -43,7 +43,7 @@ async fn main() {
     let templates_dir = env::var("TEMPLATES_DIR").expect(".env missing TEMPLATES_DIR");
     let server_uri: String = env::var("SERVER_URI").expect(".env missing SERVER");
     let database_url: String = env::var("DATABASE_URL").expect(".env missing DATABASE_URL");
-
+    install_default_drivers();
     let pool = sqlite::SqlitePoolOptions::new()
         .max_connections(5)
         .connect(&database_url)

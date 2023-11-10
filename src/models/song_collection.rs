@@ -20,10 +20,6 @@
 
 use sqlx::{self, Transaction, Sqlite, Error};
 
-// pub async fn record_exists(ex: &dyn SqliteExecutor, code: &str) -> bool {
-//     sqlx::query!("SELECT id from SongCollection where code = ?1", code).fetch_optional(&mut **ex).await.unwrap_or_default().is_some()
-// }
-
 pub async fn code_exists(txn: &mut Transaction<'_, Sqlite>, code: &str) -> bool {
     sqlx::query!("SELECT id from SongCollection where code = ?1", code).fetch_optional(&mut **txn).await.unwrap_or_default().is_some()
 }
@@ -51,3 +47,16 @@ pub async fn insert_after_code_check(txn: &mut Transaction<'_, Sqlite>, code: &s
     }
     Ok(())
 }
+
+pub async fn select_id_for_code(txn: &mut Transaction<'_, Sqlite>, code: &str) -> Result<String, Error> {
+    let record = sqlx::query!("SELECT id from SongCollection where code = ?1", code).fetch_optional(&mut **txn).await?;
+    match record {
+        Some(r) => {
+            Ok(r.id.into())
+        }
+        None => {
+            Err(sqlx::Error::RowNotFound)
+        }
+    }
+}
+

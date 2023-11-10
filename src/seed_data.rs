@@ -166,16 +166,10 @@ pub async fn seed_song(txn: &mut Transaction<'_, Sqlite>) -> Result<(), Error> {
     Ok(())
 }
 
-async fn insert_song(txn: &mut Transaction<'_, Sqlite>, collection_code: &str, song_number: i32, song_title: &str)  -> Result<(), Error> {
-    let rec = sqlx::query!("SELECT id from SongCollection where code = ?1", collection_code)
-    .fetch_optional(&mut **txn).await?;
+async fn insert_song(txn: &mut Transaction<'_, Sqlite>, collection_code: &str, song_number: i32, song_title: &str) -> Result<(), Error> {
+    let song_collection_id = song_collection::select_id_for_code(txn, collection_code).await?;
 
-    if rec.is_none() {
-        return Err(sqlx::Error::RowNotFound);
-    };
-
-    let rec  = rec.unwrap();
-    let rec2 = sqlx::query!("SELECT id from Song where song_collection_id = ?1 and song_title = ?2", rec.id, song_title)
+    let rec2 = sqlx::query!("SELECT id from Song where song_collection_id = ?1 and song_title = ?2", song_collection_id, song_title)
     .fetch_optional(&mut **txn).await?;
 
     if rec2.is_none() {
@@ -189,7 +183,7 @@ async fn insert_song(txn: &mut Transaction<'_, Sqlite>, collection_code: &str, s
             (id, song_collection_id, song_number, song_title, created_timestamp, updated_timestamp) 
             VALUES
             (?1, ?2, ?3, ?4, ?5, $6)
-            "#, id, rec.id, song_number, song_title, now, now)
+            "#, id, song_collection_id, song_number, song_title, now, now)
         .execute(&mut **txn)    
         .await?;
         print!(".");
@@ -254,14 +248,9 @@ pub async fn seed_song_author(txn: &mut Transaction<'_, Sqlite>) -> Result<(), E
 
 async fn insert_song_author(txn: &mut Transaction<'_, Sqlite>, collection_code: &str, song_number: i32, display_name: &str)  -> Result<(), Error> {
 
-    let song_collection = sqlx::query!("SELECT id from SongCollection where code = ?1", collection_code)
-    .fetch_optional(&mut **txn).await?;
-    if song_collection.is_none() {
-        return Err(sqlx::Error::RowNotFound);
-    };
-    let song_collection  = song_collection.unwrap();
+    let song_collection_id = song_collection::select_id_for_code(txn, collection_code).await?;
 
-    let song = sqlx::query!("SELECT id from Song where song_collection_id = ?1 and song_number = ?2", song_collection.id, song_number)
+    let song = sqlx::query!("SELECT id from Song where song_collection_id = ?1 and song_number = ?2", song_collection_id, song_number)
     .fetch_optional(&mut **txn).await?;
     if song.is_none() {
         return Err(sqlx::Error::RowNotFound);

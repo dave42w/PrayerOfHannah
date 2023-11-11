@@ -20,7 +20,7 @@
 
 use sqlx::{self, Transaction, Sqlite, Error};
 
-pub async fn code_exists(txn: &mut Transaction<'_, Sqlite>, code: &str) -> bool {
+pub async fn exists(txn: &mut Transaction<'_, Sqlite>, code: &str) -> bool {
     sqlx::query!("SELECT id from SongCollection where code = ?1", code).fetch_optional(&mut **txn).await.unwrap_or_default().is_some()
 }
 
@@ -42,7 +42,7 @@ pub async fn insert(txn: &mut Transaction<'_, Sqlite>, code: &str, name: &str, u
 }
 
 pub async fn insert_after_check(txn: &mut Transaction<'_, Sqlite>, code: &str, name: &str, url: &str) -> Result<(), Error> {
-    if !code_exists(txn, code).await {
+    if !exists(txn, code).await {
         insert(txn, code, name,url).await?;
     }
     Ok(())

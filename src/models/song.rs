@@ -38,11 +38,11 @@ pub async fn insert(txn: &mut Transaction<'_, Sqlite>, song_collection_id: &str,
     Ok(())
 }
 
-pub async fn song_exists(txn: &mut Transaction<'_, Sqlite>, song_collection_id: &str, song_title: &str) -> bool {
+pub async fn exists(txn: &mut Transaction<'_, Sqlite>, song_collection_id: &str, song_title: &str) -> bool {
     sqlx::query!("SELECT id from Song where song_collection_id = ?1 AND song_title = ?2", song_collection_id, song_title).fetch_optional(&mut **txn).await.unwrap_or_default().is_some()
 }
 
-pub async fn select_song_id(txn: &mut Transaction<'_, Sqlite>, song_collection_id: &str, song_number: i32) -> Result<String, Error> {
+pub async fn select_id(txn: &mut Transaction<'_, Sqlite>, song_collection_id: &str, song_number: i32) -> Result<String, Error> {
     let record = sqlx::query!("SELECT id from Song where song_collection_id = ?1 AND song_number = ?2", song_collection_id, song_number).fetch_optional(&mut **txn).await?;
     match record {
         Some(r) => {
@@ -57,7 +57,7 @@ pub async fn select_song_id(txn: &mut Transaction<'_, Sqlite>, song_collection_i
 pub async fn insert_after_check(txn: &mut Transaction<'_, Sqlite>, collection_code: &str, song_number: i32, song_title: &str) -> Result<(), Error> {
     let song_collection_id = song_collection::select_id(txn, collection_code).await?;
 
-    if !song_exists(txn, &song_collection_id, song_title).await {
+    if !exists(txn, &song_collection_id, song_title).await {
         insert(txn, &song_collection_id, song_number, song_title).await?;
     }
     Ok(())

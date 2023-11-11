@@ -20,7 +20,7 @@
 
 use sqlx::{self, Transaction, Sqlite, Error};
 
-pub async fn display_name_exists(txn: &mut Transaction<'_, Sqlite>, display_name: &str) -> bool {
+pub async fn exists(txn: &mut Transaction<'_, Sqlite>, display_name: &str) -> bool {
     sqlx::query!("SELECT id from Author where display_name = ?1", display_name).fetch_optional(&mut **txn).await.unwrap_or_default().is_some()
 }
 
@@ -41,13 +41,13 @@ pub async fn insert(txn: &mut Transaction<'_, Sqlite>, first_name: &str, surname
 }
 
 pub async fn insert_after_check(txn: &mut Transaction<'_, Sqlite>, first_name: &str, surname: &str, display_name: &str) -> Result<(), Error> {
-    if !display_name_exists(txn, display_name).await {
+    if !exists(txn, display_name).await {
         insert(txn, first_name, surname, display_name).await?;
     }
     Ok(())
 }
 
-pub async fn select_author_id(txn: &mut Transaction<'_, Sqlite>, display_name: &str) -> Result<String, Error> {
+pub async fn select_id(txn: &mut Transaction<'_, Sqlite>, display_name: &str) -> Result<String, Error> {
     let record = sqlx::query!("SELECT id from Author where display_name = ?1", display_name).fetch_optional(&mut **txn).await?;
     match record {
         Some(r) => {

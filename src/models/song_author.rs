@@ -45,8 +45,8 @@ pub async fn insert(txn: &mut Transaction<'_, Sqlite>, song_id: &str, author_id:
 
 pub async fn insert_after_check(txn: &mut Transaction<'_, Sqlite>, collection_code: &str, song_number: i32, display_name: &str)  -> Result<(), Error> {
     let song_collection_id = song_collection::select_id(txn, collection_code).await?;
-    let song_id = song::select_song_id(txn, &song_collection_id, song_number).await?;
-    let author_id = author::select_author_id(txn, &display_name).await?;
+    let song_id = song::select_id(txn, &song_collection_id, song_number).await?;
+    let author_id = author::select_id(txn, &display_name).await?;
 
     if !song_author_exists(txn, &song_id, &author_id).await {
         insert(txn, &song_id, &author_id).await?;

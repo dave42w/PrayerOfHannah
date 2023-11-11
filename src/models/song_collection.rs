@@ -18,7 +18,8 @@
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
 
-use sqlx::{self, Transaction, Sqlite, Error};
+use serde::{Serialize, Deserialize};
+use sqlx::{self, Transaction, Pool, Sqlite, Error};
 
 pub async fn exists(txn: &mut Transaction<'_, Sqlite>, code: &str) -> bool {
     sqlx::query!("SELECT id from SongCollection where code = ?1", code).fetch_optional(&mut **txn).await.unwrap_or_default().is_some()
@@ -60,3 +61,14 @@ pub async fn select_id(txn: &mut Transaction<'_, Sqlite>, code: &str) -> Result<
     }
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct SongCollection {
+    id: String, 
+    code: String,
+    name: String,
+    url: Option<String>,
+}
+
+pub async fn list_all(pool: &Pool<Sqlite>) -> Vec<SongCollection> {
+    sqlx::query_as!(SongCollection, "SELECT id, code, name, url from SongCollection ORDER BY name").fetch_all(pool).await.unwrap_or_default()
+}

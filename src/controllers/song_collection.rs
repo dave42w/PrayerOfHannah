@@ -28,18 +28,24 @@
 // use sea_orm::{ActiveModelTrait, EntityTrait, Set, QueryOrder, IntoActiveModel, QueryFilter, ColumnTrait};
 // use serde::{Serialize, Deserialize};
 
-// use crate::AppState;
+use std::collections::BTreeMap;
 
-// pub async fn collection_list(State(state): State<AppState<'_>>) -> impl IntoResponse {
-//     let s = state;
+use axum::extract::State;
+use axum::response::{IntoResponse, Html};
 
-//     let m: Vec<collection::Model> = Collection::find().order_by_asc(collection::Column::Name).all(&s.db).await
-//     .expect("could not find any Collections");
+use crate::AppState;
 
-//     let mut data = BTreeMap::new();
-//     data.insert("collection".to_string(), m);
-//     Html(s.handlebars.render("collection.html", &data).unwrap()).into_response()
-// }
+use crate::models::song_collection;
+
+pub async fn song_collection_list(State(state): State<AppState<'_>>) -> impl IntoResponse {
+    let s = state;
+    let p:sqlx::Pool<sqlx::Sqlite> = s.pool;
+    let song_collection = song_collection::list_all(&p).await;
+
+    let mut data = BTreeMap::new();
+    data.insert("collection".to_string(), song_collection);
+    Html(s.handlebars.render("collection.html", &data).unwrap()).into_response()
+}
 
 // #[derive(Serialize, Deserialize)]
 // struct CollectionForm {

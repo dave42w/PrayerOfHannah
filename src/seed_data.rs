@@ -20,7 +20,10 @@
 use sqlx::{Pool, Sqlite, Error, Transaction};
 use sqlx;
 
-use crate::models::song_collection;
+use crate::models::author::{self};
+use crate::models::song_author::{self};
+use crate::models::song_collection::{self};
+use crate::models::song::{self};
 
 pub async fn seed(pool: &Pool<Sqlite>) -> Result<(), Error> {
     let mut txn: Transaction<'_, Sqlite> = pool.begin().await?;
@@ -35,300 +38,187 @@ pub async fn seed(pool: &Pool<Sqlite>) -> Result<(), Error> {
  }
 
 pub async fn seed_collection(txn: &mut Transaction<'_, Sqlite>) -> Result<(), Error> {
-    song_collection::insert_after_code_check(txn, 
+    song_collection::insert_after_check(txn, 
         "StF", 
         "Singing the Faith", 
         "https://www.methodist.org.uk/our-faith/worship/singing-the-faith-plus/"
     )
     .await.unwrap();
+    print!(".");
 
-    song_collection::insert_after_code_check(txn, 
+    song_collection::insert_after_check(txn, 
         "H&P",
         "Hymns & Psalms",
         ""
     )
     .await.unwrap();
+    print!(".");
 
-    song_collection::insert_after_code_check(txn, 
+    song_collection::insert_after_check(txn, 
         "SoF1",
         "Songs of Fellowship book 1",
         ""
     )
     .await.unwrap();
+    print!(".");
 
     Ok(())
 }
 
 pub async fn seed_author(txn: &mut Transaction<'_, Sqlite>) -> Result<(), Error> {
-    insert_author(txn, 
+    author::insert_after_check(txn, 
         "Charles", 
         "Wesley", 
         "Charles Wesley",
     )
     .await.unwrap();
+    print!(",");
 
-    insert_author(txn,
+    author::insert_after_check(txn,
         "John",
         "Wesley",
         "John Wesley",
     )
     .await.unwrap();
+    print!(",");
     
-    insert_author(txn,
+    author::insert_after_check(txn,
         "John",
         "Bell",
         "John L. Bell",
     )
     .await.unwrap();
+    print!(",");
     
-    insert_author(txn,
+    author::insert_after_check(txn,
         "Graham",
         "Maule",
         "Graham Maule",
     )
     .await.unwrap();
+    print!(",");
     
     Ok(())
 }
 
-async fn insert_author(txn: &mut Transaction<'_, Sqlite>, first_name: &str, surname: &str, display_name: &str)  -> Result<(), Error> {
-    let rec = sqlx::query!("SELECT id from Author where display_name = ?1", display_name)
-    .fetch_optional(&mut **txn).await?;
-
-    if rec.is_none() {
-        let id = uuid::Uuid::new_v4().to_string();
-        let now = chrono::Utc::now();
-
-        sqlx::query!(
-            r#"
-            INSERT INTO Author 
-            (id, first_name, surname, display_name, created_timestamp, updated_timestamp) 
-            VALUES
-            (?1, ?2, ?3, ?4, ?5, ?6)
-            "#, id, first_name, surname, display_name, now, now)
-        .execute(&mut **txn)    
-        .await?;
-        print!(".");
-    }
-    Ok(())
-}
-
 pub async fn seed_song(txn: &mut Transaction<'_, Sqlite>) -> Result<(), Error> {
-    insert_song(txn, 
+    song::insert_after_check(txn, 
         "StF", 
         202,
         "Hark! The herald-angels sing"
     )
     .await.unwrap();
+    print!("^");
 
-    insert_song(txn, 
+    song::insert_after_check(txn, 
         "H&P", 
         106,
         "Hark! The herald-angels sing"
     )
     .await.unwrap();
+    print!("^");
 
-    insert_song(txn, 
+    song::insert_after_check(txn, 
         "StF", 
         5,
         "Father, in whom we live"
     )
     .await.unwrap();
+    print!("^");
 
-    insert_song(txn, 
+    song::insert_after_check(txn, 
         "StF", 
         671,
         "What shall we offer our good Lord"
     )
     .await.unwrap();
+    print!("^");
 
-    insert_song(txn, 
+    song::insert_after_check(txn, 
         "StF", 
         49,
         "God beyond all names"
     )
     .await.unwrap();
+    print!("^");
  
-    insert_song(txn, 
+    song::insert_after_check(txn, 
         "StF", 
         101,
         "Before the world began"
     )
     .await.unwrap();
+    print!("^");
  
-    insert_song(txn, 
+    song::insert_after_check(txn, 
         "StF", 
         1,
         "All people that on earth do dwell"
     )
     .await.unwrap();
+    print!("^");
  
     Ok(())
 }
 
-async fn insert_song(txn: &mut Transaction<'_, Sqlite>, collection_code: &str, song_number: i32, song_title: &str) -> Result<(), Error> {
-    let song_collection_id = song_collection::select_id_for_code(txn, collection_code).await?;
-
-    let rec2 = sqlx::query!("SELECT id from Song where song_collection_id = ?1 and song_title = ?2", song_collection_id, song_title)
-    .fetch_optional(&mut **txn).await?;
-
-    if rec2.is_none() {
-
-        let id = uuid::Uuid::new_v4().to_string();
-        let now = chrono::Utc::now();
-
-        sqlx::query!(
-            r#"
-            INSERT INTO Song 
-            (id, song_collection_id, song_number, song_title, created_timestamp, updated_timestamp) 
-            VALUES
-            (?1, ?2, ?3, ?4, ?5, $6)
-            "#, id, song_collection_id, song_number, song_title, now, now)
-        .execute(&mut **txn)    
-        .await?;
-        print!(".");
-    }
-    Ok(())
-
-}
-
 pub async fn seed_song_author(txn: &mut Transaction<'_, Sqlite>) -> Result<(), Error> {
-    insert_song_author(txn, 
+    song_author::insert_after_check(txn, 
         "StF", 
         202,
         "Charles Wesley", 
     )
     .await.unwrap();
+    print!("*");
 
-    insert_song_author(txn, 
+    song_author::insert_after_check(txn, 
         "H&P", 
         106,
         "Charles Wesley", 
     )
     .await.unwrap();
+    print!("*");
 
-    insert_song_author(txn, 
+    song_author::insert_after_check(txn, 
         "StF", 
         5,
         "Charles Wesley", 
     )
     .await.unwrap();
+    print!("*");
 
-    insert_song_author(txn, 
+    song_author::insert_after_check(txn, 
         "StF", 
         671,
         "John Wesley", 
     )
     .await.unwrap();
+    print!("*");
 
-    insert_song_author(txn, 
+    song_author::insert_after_check(txn, 
         "StF", 
         49,
         "John L. Bell", 
     )
     .await.unwrap();
+    print!("*");
  
-    insert_song_author(txn, 
+    song_author::insert_after_check(txn, 
         "StF", 
         101,
         "John L. Bell", 
     )
     .await.unwrap();
+    print!("*");
  
-    insert_song_author(txn, 
+    song_author::insert_after_check(txn, 
         "StF", 
         101,
         "Graham Maule", 
     )
     .await.unwrap();
- 
+    print!("*");
+
     Ok(())
 }
 
-
-async fn insert_song_author(txn: &mut Transaction<'_, Sqlite>, collection_code: &str, song_number: i32, display_name: &str)  -> Result<(), Error> {
-
-    let song_collection_id = song_collection::select_id_for_code(txn, collection_code).await?;
-
-    let song = sqlx::query!("SELECT id from Song where song_collection_id = ?1 and song_number = ?2", song_collection_id, song_number)
-    .fetch_optional(&mut **txn).await?;
-    if song.is_none() {
-        return Err(sqlx::Error::RowNotFound);
-    };
-    let song = song.unwrap();
-
-    let author = sqlx::query!("SELECT id from Author where display_name = ?1", display_name)
-    .fetch_optional(&mut **txn).await?;
-    if author.is_none() {
-        return Err(sqlx::Error::RowNotFound);
-    };
-    let author = author.unwrap();
-
-    let song_author = sqlx::query!("SELECT song_id, author_id from SongAuthor where song_id = ?1 and author_id = $2", song.id, author.id)
-    .fetch_optional(&mut **txn).await?;
-
-    if song_author.is_none() {
-
-        let now = chrono::Utc::now();
-
-        sqlx::query!(
-            r#"
-            INSERT INTO SongAuthor
-            (song_id, author_id, created_timestamp, updated_timestamp) 
-            VALUES
-            (?1, ?2, ?3, ?4)
-            "#, song.id, author.id, now, now)
-        .execute(&mut **txn)    
-        .await?;
-        print!(".");
-    }
-    Ok(())
-
-}
-//     let cf: Vec<CollectionModel> = Collection::find()
-//     .filter(collection::Column::Code.eq(code))
-//     .all(txn)
-//     .await?;   
-
-//     if !cf.is_empty() {
-//         let cn: i32 = cf[0].id;
-
-//         let sn: Vec<SongModel> = Song::find()
-//         .filter(song::Column::Number.eq(number.to_string()))
-//         .filter(song::Column::CollectionId.eq(cn.to_string()))
-//         .all(txn)
-//         .await?;   
-
-//         let a: Vec<AuthorModel> = Author::find()
-//         .filter(author::Column::FirstName.eq(first_name.to_string()))
-//         .filter(author::Column::Surname.eq(surname.to_string()))
-//         .all(txn)
-//         .await?;   
-
-//         if !sn.is_empty() && !a.is_empty() {
-//             let sid: i32 = sn[0].id;
-//             let aid: i32 = a[0].id;
-
-//             let cf: Vec<SongAuthorModel> = SongAuthor::find()
-//             .filter(song_author::Column::SongId.eq(sid.to_string()))
-//             .filter(song_author::Column::AuthorId.eq(aid.to_string()))
-//             .all(txn)
-//             .await?;   
-        
-//             if cf.is_empty() {
-        
-//                 let sa = BasicSongAuthorModel {
-//                     song_id: sid,
-//                     author_id: aid,
-//                 };
-                
-//                 let am = sa.into_active_model();
-
-//                 am.insert(txn).await.expect("could not insert");
-//                 print!(".");
-//             }
-//         }
-//     }
-//     Ok(())
-// }
 

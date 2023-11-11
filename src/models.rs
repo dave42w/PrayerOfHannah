@@ -19,5 +19,6 @@
 
 //pub mod home;
 pub mod song_collection;
-//pub mod author;
-//pub mod song;
+pub mod author;
+pub mod song;
+pub mod song_author;

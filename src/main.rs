@@ -18,7 +18,7 @@
 // Source code at https://github.com/dave42w/PrayerOfHannah
 
 use handlebars::Handlebars;
-use sqlx::{sqlite, Pool, Sqlite, any::install_default_drivers};
+use sqlx::{Pool, Sqlite, any::install_default_drivers, sqlite};
 use dotenvy::dotenv;
 use std::env;
 

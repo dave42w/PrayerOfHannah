@@ -22,8 +22,7 @@ use sqlx::{sqlite, Pool, Sqlite, any::install_default_drivers};
 use dotenvy::dotenv;
 use std::env;
 
-use crate::{seed_data::seed, templates::get_initialized_handlebars};
-mod seed_data;
+use crate::{templates::get_initialized_handlebars, models::seed_db};
 mod routes;
 mod controllers;
 mod templates;
@@ -53,9 +52,7 @@ async fn main() {
     sqlx::migrate!().run(&pool).await.expect("Migration fail");
     println!("After Migration");
 
-    println!("Before Seeding");    
-    seed(&pool).await.expect("Data seeding fail");
-    println!("After Seeding");
+    seed_db(&pool).await.expect("Data seeding fail");
 
     let state = AppState {
         handlebars: get_initialized_handlebars(templates_dir),

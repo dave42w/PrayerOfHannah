@@ -18,17 +18,18 @@
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
 
-use sqlx::{self, Transaction, Sqlite, Error};
+use sqlx::Pool;
+use sqlx::{self, Sqlite, Error};
 
 use crate::models::song_collection;
 use crate::models::song;
 use crate::models::author;
 
-pub async fn song_author_exists(txn: &mut Transaction<'_, Sqlite>, song_id: &str, author_id: &str) -> bool {
-    sqlx::query!("SELECT song_id from SongAuthor where song_id = ?1 AND author_id = ?2", song_id, author_id).fetch_optional(&mut **txn).await.unwrap_or_default().is_some()
+pub async fn song_author_exists(pool: &Pool<Sqlite>, song_id: &str, author_id: &str) -> bool {
+    sqlx::query!("SELECT song_id from SongAuthor where song_id = ?1 AND author_id = ?2", song_id, author_id).fetch_optional(pool).await.unwrap_or_default().is_some()
 }
 
-pub async fn insert(txn: &mut Transaction<'_, Sqlite>, song_id: &str, author_id: &str)  -> Result<(), Error> {
+pub async fn insert(pool: &Pool<Sqlite>, song_id: &str, author_id: &str)  -> Result<(), Error> {
     let now = chrono::Utc::now();
 
     sqlx::query!(
@@ -38,18 +39,80 @@ pub async fn insert(txn: &mut Transaction<'_, Sqlite>, song_id: &str, author_id:
         VALUES
         (?1, ?2, ?3, ?4)
         "#, song_id, author_id, now, now)
-    .execute(&mut **txn)    
+    .execute(pool)    
     .await?;
     Ok(())
 }
 
-pub async fn insert_after_check(txn: &mut Transaction<'_, Sqlite>, collection_code: &str, song_number: i32, display_name: &str)  -> Result<(), Error> {
-    let song_collection_id = song_collection::select_id(txn, collection_code).await?;
-    let song_id = song::select_id(txn, &song_collection_id, song_number).await?;
-    let author_id = author::select_id(txn, &display_name).await?;
+pub async fn insert_after_check(pool: &Pool<Sqlite>, collection_code: &str, song_number: i32, display_name: &str)  -> Result<(), Error> {
+    let song_collection_id = song_collection::select_id(pool, collection_code).await?;
+    let song_id = song::select_id(pool, &song_collection_id, song_number).await?;
+    let author_id = author::select_id(pool, &display_name).await?;
 
-    if !song_author_exists(txn, &song_id, &author_id).await {
-        insert(txn, &song_id, &author_id).await?;
+    if !song_author_exists(pool, &song_id, &author_id).await {
+        insert(pool, &song_id, &author_id).await?;
     }
     Ok(())
 }
+
+pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
+    insert_after_check(pool, 
+        "StF", 
+        202,
+        "Charles Wesley", 
+    )
+    .await.unwrap();
+    print!("*");
+
+    insert_after_check(pool, 
+        "H&P", 
+        106,
+        "Charles Wesley", 
+    )
+    .await.unwrap();
+    print!("*");
+
+    insert_after_check(pool, 
+        "StF", 
+        5,
+        "Charles Wesley", 
+    )
+    .await.unwrap();
+    print!("*");
+
+    insert_after_check(pool, 
+        "StF", 
+        671,
+        "John Wesley", 
+    )
+    .await.unwrap();
+    print!("*");
+
+    insert_after_check(pool, 
+        "StF", 
+        49,
+        "John L. Bell", 
+    )
+    .await.unwrap();
+    print!("*");
+ 
+    insert_after_check(pool, 
+        "StF", 
+        101,
+        "John L. Bell", 
+    )
+    .await.unwrap();
+    print!("*");
+ 
+    insert_after_check(pool, 
+        "StF", 
+        101,
+        "Graham Maule", 
+    )
+    .await.unwrap();
+    print!("*");
+
+    Ok(())
+}
+
+

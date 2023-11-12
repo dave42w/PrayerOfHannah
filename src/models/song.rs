@@ -18,11 +18,11 @@
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
 
-use sqlx::{self, Transaction, Sqlite, Error};
+use sqlx::{self, Sqlite, Error, Pool};
 
 use crate::models::song_collection;
 
-pub async fn insert(txn: &mut Transaction<'_, Sqlite>, song_collection_id: &str, song_number: i32, song_title: &str) -> Result<(), Error> {
+pub async fn insert(pool: &Pool<Sqlite>, song_collection_id: &str, song_number: i32, song_title: &str) -> Result<(), Error> {
     let id = uuid::Uuid::new_v4().to_string();
     let now = chrono::Utc::now();
 
@@ -33,17 +33,17 @@ pub async fn insert(txn: &mut Transaction<'_, Sqlite>, song_collection_id: &str,
         VALUES
         (?1, ?2, ?3, ?4, ?5, $6)
         "#, id, song_collection_id, song_number, song_title, now, now)
-    .execute(&mut **txn)    
+    .execute(pool)    
     .await?;
     Ok(())
 }
 
-pub async fn exists(txn: &mut Transaction<'_, Sqlite>, song_collection_id: &str, song_title: &str) -> bool {
-    sqlx::query!("SELECT id from Song where song_collection_id = ?1 AND song_title = ?2", song_collection_id, song_title).fetch_optional(&mut **txn).await.unwrap_or_default().is_some()
+pub async fn exists(pool: &Pool<Sqlite>, song_collection_id: &str, song_title: &str) -> bool {
+    sqlx::query!("SELECT id from Song where song_collection_id = ?1 AND song_title = ?2", song_collection_id, song_title).fetch_optional(pool).await.unwrap_or_default().is_some()
 }
 
-pub async fn select_id(txn: &mut Transaction<'_, Sqlite>, song_collection_id: &str, song_number: i32) -> Result<String, Error> {
-    let record = sqlx::query!("SELECT id from Song where song_collection_id = ?1 AND song_number = ?2", song_collection_id, song_number).fetch_optional(&mut **txn).await?;
+pub async fn select_id(pool: &Pool<Sqlite>, song_collection_id: &str, song_number: i32) -> Result<String, Error> {
+    let record = sqlx::query!("SELECT id from Song where song_collection_id = ?1 AND song_number = ?2", song_collection_id, song_number).fetch_optional(pool).await?;
     match record {
         Some(r) => {
             Ok(r.id.into())
@@ -54,13 +54,72 @@ pub async fn select_id(txn: &mut Transaction<'_, Sqlite>, song_collection_id: &s
     }
 }
 
-pub async fn insert_after_check(txn: &mut Transaction<'_, Sqlite>, collection_code: &str, song_number: i32, song_title: &str) -> Result<(), Error> {
-    let song_collection_id = song_collection::select_id(txn, collection_code).await?;
+pub async fn insert_after_check(pool: &Pool<Sqlite>, collection_code: &str, song_number: i32, song_title: &str) -> Result<(), Error> {
+    let song_collection_id = song_collection::select_id(pool, collection_code).await?;
 
-    if !exists(txn, &song_collection_id, song_title).await {
-        insert(txn, &song_collection_id, song_number, song_title).await?;
+    if !exists(pool, &song_collection_id, song_title).await {
+        insert(pool, &song_collection_id, song_number, song_title).await?;
     }
     Ok(())
 }
 
 
+pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
+    insert_after_check(pool, 
+        "StF", 
+        202,
+        "Hark! The herald-angels sing"
+    )
+    .await?;
+    print!("^");
+
+    insert_after_check(pool, 
+        "H&P", 
+        106,
+        "Hark! The herald-angels sing"
+    )
+    .await?;
+    print!("^");
+
+    insert_after_check(pool, 
+        "StF", 
+        5,
+        "Father, in whom we live"
+    )
+    .await?;
+    print!("^");
+
+    insert_after_check(pool, 
+        "StF", 
+        671,
+        "What shall we offer our good Lord"
+    )
+    .await?;
+    print!("^");
+
+    insert_after_check(pool, 
+        "StF", 
+        49,
+        "God beyond all names"
+    )
+    .await?;
+    print!("^");
+ 
+    insert_after_check(pool, 
+        "StF", 
+        101,
+        "Before the world began"
+    )
+    .await?;
+    print!("^");
+ 
+    insert_after_check(pool, 
+        "StF", 
+        1,
+        "All people that on earth do dwell"
+    )
+    .await?;
+    print!("^");
+ 
+    Ok(())
+}

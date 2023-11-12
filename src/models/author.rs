@@ -18,13 +18,13 @@
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
 
-use sqlx::{self, Transaction, Sqlite, Error};
+use sqlx::{self, Sqlite, Error, Pool};
 
-pub async fn exists(txn: &mut Transaction<'_, Sqlite>, display_name: &str) -> bool {
-    sqlx::query!("SELECT id from Author where display_name = ?1", display_name).fetch_optional(&mut **txn).await.unwrap_or_default().is_some()
+pub async fn exists(pool: &Pool<Sqlite>, display_name: &str) -> bool {
+    sqlx::query!("SELECT id from Author where display_name = ?1", display_name).fetch_optional(pool).await.unwrap_or_default().is_some()
 }
 
-pub async fn insert(txn: &mut Transaction<'_, Sqlite>, first_name: &str, surname: &str, display_name: &str)  -> Result<(), Error> {
+pub async fn insert(pool: &Pool<Sqlite>, first_name: &str, surname: &str, display_name: &str)  -> Result<(), Error> {
     let id = uuid::Uuid::new_v4().to_string();
     let now = chrono::Utc::now();
 
@@ -35,20 +35,20 @@ pub async fn insert(txn: &mut Transaction<'_, Sqlite>, first_name: &str, surname
         VALUES
         (?1, ?2, ?3, ?4, ?5, ?6)
         "#, id, first_name, surname, display_name, now, now)
-    .execute(&mut **txn)    
+    .execute(pool)    
     .await?;
     Ok(())
 }
 
-pub async fn insert_after_check(txn: &mut Transaction<'_, Sqlite>, first_name: &str, surname: &str, display_name: &str) -> Result<(), Error> {
-    if !exists(txn, display_name).await {
-        insert(txn, first_name, surname, display_name).await?;
+pub async fn insert_after_check(pool: &Pool<Sqlite>, first_name: &str, surname: &str, display_name: &str) -> Result<(), Error> {
+    if !exists(pool, display_name).await {
+        insert(pool, first_name, surname, display_name).await?;
     }
     Ok(())
 }
 
-pub async fn select_id(txn: &mut Transaction<'_, Sqlite>, display_name: &str) -> Result<String, Error> {
-    let record = sqlx::query!("SELECT id from Author where display_name = ?1", display_name).fetch_optional(&mut **txn).await?;
+pub async fn select_id(pool: &Pool<Sqlite>, display_name: &str) -> Result<String, Error> {
+    let record = sqlx::query!("SELECT id from Author where display_name = ?1", display_name).fetch_optional(pool).await?;
     match record {
         Some(r) => {
             Ok(r.id.into())
@@ -57,5 +57,41 @@ pub async fn select_id(txn: &mut Transaction<'_, Sqlite>, display_name: &str) ->
             Err(sqlx::Error::RowNotFound)
         }
     }
+}
+
+pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
+    insert_after_check(pool, 
+        "Charles", 
+        "Wesley", 
+        "Charles Wesley",
+    )
+    .await?;
+    print!(",");
+
+    insert_after_check(pool,
+        "John",
+        "Wesley",
+        "John Wesley",
+    )
+    .await?;
+    print!(",");
+    
+    insert_after_check(pool,
+        "John",
+        "Bell",
+        "John L. Bell",
+    )
+    .await?;
+    print!(",");
+    
+    insert_after_check(pool,
+        "Graham",
+        "Maule",
+        "Graham Maule",
+    )
+    .await?;
+    print!(",");
+    
+    Ok(())
 }
 

@@ -40,6 +40,10 @@ pub fn create_routes(state: AppState<'static>) -> Router {
     .route("/", get(get_home))
 
     .route("/SongCollection", get(song_collection_list))
+    .with_state(state)
+}
+
+
     // .route("/Collection/:id", get(collection_display))
     // .route("/Collection/add", get(new_collection_form))
     // .route("/Collection/post", post(insert_collection))
@@ -63,5 +67,3 @@ pub fn create_routes(state: AppState<'static>) -> Router {
     // .route("/Song/patch", post(update_song))
     // .route("/Song/delete/:id", post(delete_song))
 
-    .with_state(state)
-}

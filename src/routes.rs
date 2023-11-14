@@ -26,7 +26,7 @@ use axum::{
 use tower_http::services::ServeFile;
 
 use crate::controllers::home::get_home;
-use crate::controllers::song_collection::song_collection_list;
+use crate::controllers::song_collection::create_song_collection_routes;
 use crate::AppState;
 
 
@@ -39,17 +39,9 @@ pub fn create_routes(state: AppState<'static>) -> Router {
             
     .route("/", get(get_home))
 
-    .route("/SongCollection", get(song_collection_list))
+    .nest("/SongCollection", create_song_collection_routes(state.clone()))
     .with_state(state)
 }
-
-
-    // .route("/Collection/:id", get(collection_display))
-    // .route("/Collection/add", get(new_collection_form))
-    // .route("/Collection/post", post(insert_collection))
-    // .route("/Collection/edit/:id", get(edit_collection_form))
-    // .route("/Collection/patch", post(update_collection))
-    // .route("/Collection/delete/:id", post(delete_collection))
       
     // .route("/Author", get(author_list))
     // .route("/Author/:id", get(author_display))

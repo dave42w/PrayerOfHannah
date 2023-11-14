@@ -32,7 +32,6 @@ mod models;
 pub struct AppState<'a> {
     pub handlebars: Handlebars<'a>,
     pub pool: Pool<Sqlite>,
-    pub uri: String,
 }
 
 #[tokio::main]
@@ -57,15 +56,13 @@ async fn main() {
     let state = AppState {
         handlebars: get_initialized_handlebars(templates_dir),
         pool: pool,
-        uri: server_uri,
     };
 
-    run(state).await    
+    run(server_uri, state).await    
 }
 
 
-pub async fn run(state: AppState<'static>) {
-    let server_uri = state.uri.clone();
+pub async fn run(server_uri: String, state: AppState<'static>) {
     let app = routes::create_routes(state);
     
     axum::Server::bind(&server_uri.parse().unwrap())

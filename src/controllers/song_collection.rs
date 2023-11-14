@@ -30,12 +30,27 @@
 
 use std::collections::BTreeMap;
 
+use axum::Router;
 use axum::extract::State;
 use axum::response::{IntoResponse, Html};
+use axum::routing::get;
 
 use crate::AppState;
 
 use crate::models::song_collection;
+
+pub fn create_song_collection_routes(_state: AppState<'static>) -> Router <AppState<'static>>{
+    Router::new()
+    .route("/", get(song_collection_list))
+}
+
+
+    // .route("/Collection/:id", get(collection_display))
+    // .route("/Collection/add", get(new_collection_form))
+    // .route("/Collection/post", post(insert_collection))
+    // .route("/Collection/edit/:id", get(edit_collection_form))
+    // .route("/Collection/patch", post(update_collection))
+    // .route("/Collection/delete/:id", post(delete_collection))
 
 pub async fn song_collection_list(State(state): State<AppState<'_>>) -> impl IntoResponse {
     let s = state;

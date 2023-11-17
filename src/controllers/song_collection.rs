@@ -59,10 +59,10 @@ pub async fn song_collection_list(State(state): State<AppState<'_>>) -> impl Int
     let mut data = BTreeMap::new();
     data.insert("collection".to_string(), song_collection);
     match state.handlebars.render("collection.html", &data) {
-        Ok(r) => Html(r).into_response(),
-        Err(e) => (
+        Ok(rendered) => Html(rendered).into_response(),
+        Err(error) => (
             StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Failed to render template. Error: {e}"),
+            format!("Failed to render template. Error: {error}"),
         )
             .into_response(),
     }

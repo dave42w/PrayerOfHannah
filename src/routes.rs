@@ -30,7 +30,7 @@ use crate::controllers::song_collection::create_song_collection_routes;
 use crate::AppState;
 
 
-pub fn create_routes(state: AppState<'static>) -> Router {
+pub fn create_routes() -> Router <AppState<'static>> {
    
     Router::new()
 
@@ -40,7 +40,6 @@ pub fn create_routes(state: AppState<'static>) -> Router {
     .route("/", get(get_home))
 
     .nest("/SongCollection", create_song_collection_routes())
-    .with_state(state)
 }
       
     // .route("/Author", get(author_list))

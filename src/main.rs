@@ -63,7 +63,7 @@ async fn main() {
 
 
 pub async fn run(server_uri: String, state: AppState<'static>) {
-    let app = routes::create_routes(state);
+    let app = routes::create_routes().with_state(state);
     
     axum::Server::bind(&server_uri.parse().unwrap())
         .serve(app.into_make_service())

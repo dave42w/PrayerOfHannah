@@ -39,7 +39,7 @@ use crate::AppState;
 
 use crate::models::song_collection;
 
-pub fn create_song_collection_routes(_state: AppState<'static>) -> Router <AppState<'static>>{
+pub fn create_song_collection_routes() -> Router <AppState<'static>> {
     Router::new()
     .route("/", get(song_collection_list))
 }

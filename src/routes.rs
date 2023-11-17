@@ -39,7 +39,7 @@ pub fn create_routes(state: AppState<'static>) -> Router {
             
     .route("/", get(get_home))
 
-    .nest("/SongCollection", create_song_collection_routes(state.clone()))
+    .nest("/SongCollection", create_song_collection_routes())
     .with_state(state)
 }
       

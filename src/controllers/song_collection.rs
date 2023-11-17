@@ -32,7 +32,8 @@ use std::collections::BTreeMap;
 
 use axum::Router;
 use axum::extract::State;
-use axum::response::{IntoResponse, Html};
+use axum::http::StatusCode;
+use axum::response::{Html, IntoResponse};
 use axum::routing::get;
 
 use crate::AppState;
@@ -53,13 +54,18 @@ pub fn create_song_collection_routes() -> Router <AppState<'static>> {
     // .route("/Collection/delete/:id", post(delete_collection))
 
 pub async fn song_collection_list(State(state): State<AppState<'_>>) -> impl IntoResponse {
-    let s = state;
-    let p:sqlx::Pool<sqlx::Sqlite> = s.pool;
-    let song_collection = song_collection::list_all(&p).await;
+    let song_collection = song_collection::list_all(&state.pool).await;
 
     let mut data = BTreeMap::new();
     data.insert("collection".to_string(), song_collection);
-    Html(s.handlebars.render("collection.html", &data).unwrap()).into_response()
+    match state.handlebars.render("collection.html", &data) {
+        Ok(r) => Html(r).into_response(),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Failed to render template. Error: {e}"),
+        )
+            .into_response(),
+    }
 }
 
 // #[derive(Serialize, Deserialize)]

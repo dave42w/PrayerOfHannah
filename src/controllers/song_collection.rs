@@ -32,7 +32,7 @@
 use axum::http::StatusCode;
 use axum::{Router, Form};
 use axum::extract::{State, Path};
-use axum::response::IntoResponse;
+use axum::response::{IntoResponse, Redirect, Response};
 use axum::routing::{get, post};
 
 use crate::AppState;
@@ -78,8 +78,8 @@ pub async fn edit(state: State<AppState<'_>>, Path(id): Path<String>) -> impl In
 
 pub async fn save(state: State<AppState<'_>>, Form(input): Form<SongCollection>) -> impl IntoResponse {
     match song_collection::save(&state.pool, &input.id, &input.code, &input.name, &input.url).await {
-        Ok(_) => (StatusCode::OK, format!("Saved")),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to Save. Error: {:?}", e)),
+        Ok(_) => Redirect::to("/SongCollection").into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to Save. Error: {:?}", e)).into_response(),
     }
 }
 

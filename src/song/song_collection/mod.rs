@@ -19,9 +19,10 @@
 
 pub(crate) mod model;
 
-use axum::http::StatusCode;
+use std::collections::HashMap;
+
 use axum::{Router, Form};
-use axum::extract::{State, Path};
+use axum::extract::{State, Path, Query};
 use axum::response::{IntoResponse, Redirect};
 use axum::routing::{get, post};
 use serde::{Serialize, Deserialize};
@@ -51,7 +52,19 @@ impl Default for SongCollection {
 
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct SongCollections {
-    song_collection: Vec<SongCollection>    
+    song_collections: Vec<SongCollection>    
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct PageSongCollection {
+    error: String,
+    song_collection: SongCollection,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct PageSongCollections {
+    error: String,
+    song_collections: SongCollections,
 }
 
 pub fn create_routes() -> Router <AppState<'static>> {
@@ -64,36 +77,43 @@ pub fn create_routes() -> Router <AppState<'static>> {
     .route("/delete/:id", post(delete))
 }
 
-pub async fn list(state: State<AppState<'_>>) -> impl IntoResponse {
+pub async fn list(state: State<AppState<'_>>, Query(params): Query<HashMap<String, String>>) -> impl IntoResponse {
     let song_collections = model::list_all(&state.pool).await;
-    render_into_response(state, "song/song_collection/song_collection_list.html", &song_collections)
+    let e = params.get("error");
+    let es = e.unwrap_or(&"".to_string()).to_string();
+
+    let page = PageSongCollections {error: es,  song_collections: song_collections,};
+    render_into_response(state, "song/song_collection/song_collection_list.html", &page)
 }
 
 pub async fn display(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
     let song_collection = model::select_by_id(&state.pool, &id).await;
-    render_into_response(state, "song/song_collection/song_collection_display.html", &song_collection)
+    let page = PageSongCollection {error: "".to_string(), song_collection: song_collection,};
+    render_into_response(state, "song/song_collection/song_collection_display.html", &page)
 }
 
 pub async fn add(state: State<AppState<'_>>) -> impl IntoResponse {
     let song_collection = SongCollection {..Default::default()};
-    render_into_response(state, "song/song_collection/song_collection_form.html", &song_collection)
+    let page = PageSongCollection {error: "".to_string(), song_collection: song_collection,};
+    render_into_response(state, "song/song_collection/song_collection_form.html", &page)
 }
 
 pub async fn edit(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
     let song_collection = model::select_by_id(&state.pool, &id).await;
-    render_into_response(state, "song/song_collection/song_collection_form.html", &song_collection)
+    let page = PageSongCollection {error: "".to_string(), song_collection: song_collection,};
+    render_into_response(state, "song/song_collection/song_collection_form.html", &page)
 }
 
 pub async fn save(state: State<AppState<'_>>, Form(input): Form<SongCollection>) -> impl IntoResponse {
     match model::save(&state.pool, &input.id, &input.code, &input.name, &input.url).await {
-        Ok(_) => Redirect::to("/SongCollection").into_response(),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to Save. Error: {:?}", e)).into_response(),
+        Ok(_) => Redirect::to("/Song/SongCollection").into_response(),
+        Err(e) => Redirect::to(&format!("/Song/SongCollection?error=Failed to Save. {:?}", e)).into_response(),
     }
 }
 
 pub async fn delete(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
     match model::delete(&state.pool, &id).await {
-        Ok(_) => Redirect::to("/SongCollection").into_response(),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to Delete. Error: {:?}", e)).into_response(),
+        Ok(_) => Redirect::to("/Song/SongCollection").into_response(),
+        Err(e) => Redirect::to(&format!("/Song/SongCollection?error=Failed to Delete. {:?}", e)).into_response(),
     }
 }

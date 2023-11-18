@@ -94,7 +94,7 @@ pub async fn insert_after_check(pool: &Pool<Sqlite>, code: &str, name: &str, url
 // }
 
 pub async fn list_all(pool: &Pool<Sqlite>) -> SongCollections {
-    SongCollections{song_collection: sqlx::query_as!(SongCollection, "SELECT id, code, name, url from SongCollection ORDER BY name").fetch_all(pool).await.unwrap_or_default()}
+    SongCollections{song_collections: sqlx::query_as!(SongCollection, "SELECT id, code, name, url from SongCollection ORDER BY name").fetch_all(pool).await.unwrap_or_default()}
 }
 
 pub async fn select_by_id (pool: &Pool<Sqlite>, id: &str) -> SongCollection {

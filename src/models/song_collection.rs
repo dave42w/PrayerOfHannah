@@ -43,6 +43,36 @@ pub async fn insert(pool: &Pool<Sqlite>, code: &str, name: &str, url: &str)  -> 
     Ok(())
 }
 
+pub async fn update(pool: &Pool<Sqlite>, id: &str, code: &str, name: &str, url: &str) -> Result<(), Error> {
+    let now = chrono::Utc::now();
+    sqlx::query!(
+        r#"
+        UPDATE SongCollection 
+        SET code = ?2,
+            name = ?3,
+            url = ?4,
+            updated_timestamp = ?5
+        WHERE 
+            id = ?1
+        "#, 
+        id, code, name, url, now)
+    .execute(pool)    
+    .await?;
+    Ok(())
+}
+
+pub async fn save(pool: &Pool<Sqlite>, id: &str, code: &str, name: &str, url: &Option<String>) -> Result<(), Error> {
+    let mut surl = "".to_string();
+    if (&url).is_some() { surl = url.clone().unwrap() };
+
+    if id.is_empty() {
+        return insert(&pool, &code, &name, &surl).await;
+    } else {
+        return update(&pool, &id, &code, &name, &surl).await;
+    }
+}
+
+
 pub async fn insert_after_check(pool: &Pool<Sqlite>, code: &str, name: &str, url: &str) -> Result<(), Error> {
     if !exists(pool, code).await {
         insert(pool, code, name,url).await?;

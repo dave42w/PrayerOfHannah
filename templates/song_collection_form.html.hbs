@@ -23,19 +23,19 @@
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible">  
   <link rel="stylesheet" href="/static/PrayerOfHannah.css">  
-  <head><title>Prayer of Hannah: Collections (of Songs) Form</title>
+  <head><title>Prayer of Hannah: Song Collections Form</title>
 </head>
 <body>
     <h1>Prayer of Hannah: Song Collections Form</h1>
 
 <!--Method is POST for a new place, PATCH for an update-->
-<form action="/SongCollection/{{method}}" method="POST" enctype="application/x-www-form-urlencoded">
+<form action="/SongCollection/save" method="POST" enctype="application/x-www-form-urlencoded">
   <fieldset>
     <legend>Collection:</legend>
-    <input type="hidden" name="song_collection.id" value="{{id}}"/>
-    <label for="name">Collection Name:</label> <input type="text" name="name" value="{{song_collection.name}}" autofocus /><br>
-    <label for="code">Collection Short Code:</label> <input type="text" name="code" value="{{song_collection.code}}" /><br>
-    <label for="url">Collection URL:</label> <input type="text" name="url" value="{{song_collection.url}}" /><br>
+    <input type="hidden" name="id" value="{{id}}"/>
+    <label for="name">Collection Name:</label> <input type="text" name="name" value="{{name}}" autofocus /><br>
+    <label for="code">Collection Short Code:</label> <input type="text" name="code" value="{{code}}" /><br>
+    <label for="url">Collection URL:</label> <input type="text" name="url" value="{{url}}" /><br>
     <input type="submit" name="Submit" value="Save" />
   </fieldset>
 </form> 

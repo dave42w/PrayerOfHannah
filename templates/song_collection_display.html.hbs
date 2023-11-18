@@ -23,20 +23,20 @@
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible">  
   <link rel="stylesheet" href="/static/PrayerOfHannah.css">  
-  <head><title>Prayer of Hannah: Collections (of Songs) Form</title>
+  <head><title>Prayer of Hannah: Song Collections Display</title>
 </head>
 <body>
     <h1>Prayer of Hannah: Song Collection Display</h1>
 
-    <p>Collection Name: {{song_collection.name}}</p>
-    <p>Collection Short Code: {{song_collection.code}}</p>
-    <p>Collection URL: {{song_collection.url}}</p>
+    <p>Collection Name: {{name}}</p>
+    <p>Collection Short Code: {{code}}</p>
+    <p>Collection URL: {{url}}</p>
 
     <p>
-        <form style="display: inline;" action="/SongCollection/edit/{{song_collection.id}}" method="GET" enctype="application/x-www-form-urlencoded">
+        <form style="display: inline;" action="/SongCollection/edit/{{id}}" method="GET" enctype="application/x-www-form-urlencoded">
             <input style="display: inline;" type="submit" name="Submit" value="Edit" />
         </form>
-        <form style="display: inline;" action="/SongCollection/delete/{{song_collection.id}}" method="POST" enctype="application/x-www-form-urlencoded">
+        <form style="display: inline;" action="/SongCollection/delete/{{id}}" method="POST" enctype="application/x-www-form-urlencoded">
             <input style="display: inline;" type="submit" name="Submit" value="Delete" />
         </form>
     </p>

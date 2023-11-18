@@ -29,13 +29,11 @@
 // use serde::{Serialize, Deserialize};
 
 
-use axum::Router;
+use axum::http::StatusCode;
+use axum::{Router, Form};
 use axum::extract::{State, Path};
 use axum::response::IntoResponse;
-use axum::routing::get;
-use serde::{Serialize, Deserialize};
-
-
+use axum::routing::{get, post};
 
 use crate::AppState;
 
@@ -50,6 +48,7 @@ pub fn create_song_collection_routes() -> Router <AppState<'static>> {
     .route("/:id", get(display))
     .route("/add", get(add))
     .route("/edit/:id", get(edit))
+    .route("/save", post(save))
 }
 
 
@@ -62,52 +61,29 @@ pub async fn list(state: State<AppState<'_>>) -> impl IntoResponse {
     render_into_response(state, "song_collection_list.html", &song_collections)
 }
 
-#[derive(Serialize, Deserialize)]
-struct SongCollectionExtended {
-    song_collection: SongCollection,
-    //songs: Vec<song>    
-}
-
-#[derive(Serialize, Deserialize)]
-struct SongCollectionForm {
-    song_collection: SongCollection,
-    method: String,
-    //songs: Vec<song>    
-}
-
-
 pub async fn display(state: State<AppState<'_>>, Path(id): Path<String>) -> impl IntoResponse {
     let song_collection = song_collection::select_by_id(&state.pool, &id).await;
-    let song_collection_extended = SongCollectionExtended{song_collection: song_collection};
-
-    render_into_response(state, "song_collection_display.html", &song_collection_extended)
+    render_into_response(state, "song_collection_display.html", &song_collection)
 }
 
 pub async fn add(state: State<AppState<'_>>) -> impl IntoResponse {
-    let song_collection_form = SongCollectionForm {
-        song_collection: SongCollection {..Default::default()},
-        method: "post".to_string(),
-    };
-    render_into_response(state, "song_collection_form.html", &song_collection_form)
+    let song_collection = SongCollection {..Default::default()};
+    render_into_response(state, "song_collection_form.html", &song_collection)
 }
 
 pub async fn edit(state: State<AppState<'_>>, Path(id): Path<String>) -> impl IntoResponse {
     let song_collection = song_collection::select_by_id(&state.pool, &id).await;
-    let song_collection_form = SongCollectionForm{song_collection: song_collection, method: "patch".to_string()};
+    render_into_response(state, "song_collection_form.html", &song_collection)
+}
 
-    render_into_response(state, "song_collection_form.html", &song_collection_form)
+pub async fn save(state: State<AppState<'_>>, Form(input): Form<SongCollection>) -> impl IntoResponse {
+    match song_collection::save(&state.pool, &input.id, &input.code, &input.name, &input.url).await {
+        Ok(_) => (StatusCode::OK, format!("Saved")),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to Save. Error: {:?}", e)),
+    }
 }
 
 
-// pub async fn insert_collection(State(state): State<AppState<'_>>, Form(input): Form<BasicCollectionModel>) -> impl IntoResponse {
-//     let s = state;
-
-//     let am = input.into_active_model();
-
-//     am.insert(&s.db).await.expect("could not insert");
-
-//     Redirect::to("/Collection")
-// }
 
 // pub async fn insert_collection(State(state): State<AppState<'_>>, Form(input): Form<BasicCollectionModel>) -> impl IntoResponse {
 //     let s = state;

@@ -26,21 +26,21 @@
   <head><title>Prayer of Hannah: Collections (of Songs) Form</title>
 </head>
 <body>
-    <h1>Prayer of Hannah: Collections (of Songs) Display</h1>
+    <h1>Prayer of Hannah: Song Collection Display</h1>
 
-    <p>Collection Name: {{name}}</p>
-    <p>Collection Short Code: {{code}}</p>
-    <p>Collection URL: {{url}}</p>
+    <p>Collection Name: {{song_collection.name}}</p>
+    <p>Collection Short Code: {{song_collection.code}}</p>
+    <p>Collection URL: {{song_collection.url}}</p>
 
     <p>
-        <form style="display: inline;" action="/Collection/edit/{{id}}" method="GET" enctype="application/x-www-form-urlencoded">
+        <form style="display: inline;" action="/SongCollection/edit/{{song_collection.id}}" method="GET" enctype="application/x-www-form-urlencoded">
             <input style="display: inline;" type="submit" name="Submit" value="Edit" />
         </form>
-        <form style="display: inline;" action="/Collection/delete/{{id}}" method="POST" enctype="application/x-www-form-urlencoded">
+        <form style="display: inline;" action="/SongCollection/delete/{{song_collection.id}}" method="POST" enctype="application/x-www-form-urlencoded">
             <input style="display: inline;" type="submit" name="Submit" value="Delete" />
         </form>
     </p>
-    <p><a href="/Collection">Back to Collection</a></p>
+    <p><a href="/SongCollection">Back to Song Collections</a></p>
     <p><a href="/">Home</a></p>
     <p>Source code on <a href="https://codeberg.org">CodeBerg</a> at <a href="https://codeberg.org/Dave42W/PrayerOfHannah">PrayerOfHannah</a></p>
 

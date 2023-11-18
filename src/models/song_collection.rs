@@ -21,6 +21,7 @@
 use serde::{Serialize, Deserialize};
 use sqlx::{self, Pool, Sqlite, Error};
 
+
 pub async fn exists(pool: &Pool<Sqlite>, code: &str) -> bool {
     sqlx::query!("SELECT id from SongCollection where code = ?1", code).fetch_optional(pool).await.unwrap_or_default().is_some()
 }
@@ -61,18 +62,37 @@ pub async fn select_id(pool: &Pool<Sqlite>, code: &str) -> Result<String, Error>
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SongCollection {
-    id: String, 
-    code: String,
-    name: String,
-    url: Option<String>,
+    pub id: String, 
+    pub code: String,
+    pub name: String,
+    pub url: Option<String>,
 }
 
-pub async fn list_all(pool: &Pool<Sqlite>) -> Vec<SongCollection> {
-    sqlx::query_as!(SongCollection, "SELECT id, code, name, url from SongCollection ORDER BY name").fetch_all(pool).await.unwrap_or_default()
+impl Default for SongCollection {
+    fn default() -> SongCollection {
+        SongCollection {
+            id: "".to_string(), 
+            code: "".to_string(), 
+            name: "".to_string(), 
+            url: std::option::Option::Some("".to_string())
+        }
+    }
 }
 
+#[derive(Serialize, Deserialize, Default, Debug)]
+pub struct SongCollections {
+    song_collection: Vec<SongCollection>    
+}
+
+pub async fn list_all(pool: &Pool<Sqlite>) -> SongCollections {
+    SongCollections{song_collection: sqlx::query_as!(SongCollection, "SELECT id, code, name, url from SongCollection ORDER BY name").fetch_all(pool).await.unwrap_or_default()}
+}
+
+pub async fn select_by_id (pool: &Pool<Sqlite>, id: &str) -> SongCollection {
+    sqlx::query_as!(SongCollection, "SELECT id, code, name, url from SongCollection where id = ?1", id).fetch_one(pool).await.unwrap_or_default()
+}
 pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
     insert_after_check(pool, 
         "StF", 

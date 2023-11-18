@@ -28,103 +28,85 @@
 // use sea_orm::{ActiveModelTrait, EntityTrait, Set, QueryOrder, IntoActiveModel, QueryFilter, ColumnTrait};
 // use serde::{Serialize, Deserialize};
 
-use std::collections::BTreeMap;
 
 use axum::Router;
-use axum::extract::State;
+use axum::extract::{State, Path};
 use axum::response::IntoResponse;
 use axum::routing::get;
+use serde::{Serialize, Deserialize};
 
 
 
 use crate::AppState;
 
 use crate::models::song_collection;
+use crate::models::song_collection::SongCollection;
 
 use super::render_into_response;
 
 pub fn create_song_collection_routes() -> Router <AppState<'static>> {
     Router::new()
-    .route("/", get(song_collection_list))
+    .route("/", get(list))
+    .route("/:id", get(display))
+    .route("/add", get(add))
+    .route("/edit/:id", get(edit))
 }
 
 
-    // .route("/Collection/:id", get(collection_display))
-    // .route("/Collection/add", get(new_collection_form))
     // .route("/Collection/post", post(insert_collection))
-    // .route("/Collection/edit/:id", get(edit_collection_form))
     // .route("/Collection/patch", post(update_collection))
     // .route("/Collection/delete/:id", post(delete_collection))
 
-pub async fn song_collection_list(state: State<AppState<'_>>) -> impl IntoResponse {
-    let song_collection = song_collection::list_all(&state.pool).await;
-
-    let mut data = BTreeMap::new();
-    data.insert("collection".to_string(), song_collection);
-    render_into_response(state, "collection.html", &data)
+pub async fn list(state: State<AppState<'_>>) -> impl IntoResponse {
+    let song_collections = song_collection::list_all(&state.pool).await;
+    render_into_response(state, "song_collection_list.html", &song_collections)
 }
 
-// pub async fn song_collection_list(State(state): State<AppState<'_>>) -> impl IntoResponse {
-//     let song_collection = song_collection::list_all(&state.pool).await;
+#[derive(Serialize, Deserialize)]
+struct SongCollectionExtended {
+    song_collection: SongCollection,
+    //songs: Vec<song>    
+}
 
-//     let mut data = BTreeMap::new();
-//     data.insert("collection".to_string(), song_collection);
-//     match state.handlebars.render("collection.html", &data) {
-//         Ok(rendered) => Html(rendered).into_response(),
-//         Err(error) => (
-//             StatusCode::INTERNAL_SERVER_ERROR,
-//             format!("Failed to render template. Error: {error}"),
-//         )
-//             .into_response(),
-//     }
-// }
+#[derive(Serialize, Deserialize)]
+struct SongCollectionForm {
+    song_collection: SongCollection,
+    method: String,
+    //songs: Vec<song>    
+}
 
-// #[derive(Serialize, Deserialize)]
-// struct CollectionForm {
-//     method: String,
-//     id: i32,
-//     name: String,
-//     code: String,
-//     url: String,
-//     song: Vec<song::Model>    
-// }
 
-// pub async fn collection_display(State(state): State<AppState<'_>>, Path(id): Path<String>) -> impl IntoResponse {
-//     let s = state;
-//     let i = id.parse::<i32>().unwrap();
-	
-//     let collection = Collection::find_by_id(i).one(&s.db).await
-//     .expect("could not find the Collection");
-//     let m = collection.unwrap();
+pub async fn display(state: State<AppState<'_>>, Path(id): Path<String>) -> impl IntoResponse {
+    let song_collection = song_collection::select_by_id(&state.pool, &id).await;
+    let song_collection_extended = SongCollectionExtended{song_collection: song_collection};
 
-//     let ms: Vec<song::Model> = Song::find().filter(song::Column::CollectionId.eq(i)).order_by_asc(song::Column::Number).all(&s.db).await
-//     .expect("could not find any Songs");
+    render_into_response(state, "song_collection_display.html", &song_collection_extended)
+}
 
-//     let cf = CollectionForm {
-//         method: "display".to_string(),
-//         id: m.id,
-//         name: m.name.to_string(),
-//         code: m.code.to_string(),
-//         url: m.url.to_string(),
-//         song: ms,
-//     };
+pub async fn add(state: State<AppState<'_>>) -> impl IntoResponse {
+    let song_collection_form = SongCollectionForm {
+        song_collection: SongCollection {..Default::default()},
+        method: "post".to_string(),
+    };
+    render_into_response(state, "song_collection_form.html", &song_collection_form)
+}
 
-//     Html(s.handlebars.render("collection_display.html", &cf).unwrap()).into_response()
-// }
+pub async fn edit(state: State<AppState<'_>>, Path(id): Path<String>) -> impl IntoResponse {
+    let song_collection = song_collection::select_by_id(&state.pool, &id).await;
+    let song_collection_form = SongCollectionForm{song_collection: song_collection, method: "patch".to_string()};
 
-// pub async fn new_collection_form(State(state): State<AppState<'_>>) -> impl IntoResponse {
+    render_into_response(state, "song_collection_form.html", &song_collection_form)
+}
+
+
+// pub async fn insert_collection(State(state): State<AppState<'_>>, Form(input): Form<BasicCollectionModel>) -> impl IntoResponse {
 //     let s = state;
 
-//     let cf = CollectionForm {
-//         method: "post".to_string(),
-//         id: 0,
-//         name: "".to_string(),
-//         code: "".to_string(),
-//         url: "".to_string(),
-//         song: vec![],
-//     };
+//     let am = input.into_active_model();
 
-//     Html(s.handlebars.render("collection_form.html", &cf).unwrap()).into_response()
+//     am.insert(&s.db).await.expect("could not insert");
+
+//     Redirect::to("/Collection")
 // }
 
 // pub async fn insert_collection(State(state): State<AppState<'_>>, Form(input): Form<BasicCollectionModel>) -> impl IntoResponse {

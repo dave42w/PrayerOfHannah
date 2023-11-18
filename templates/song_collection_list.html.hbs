@@ -25,17 +25,17 @@
   <link rel="stylesheet" href="/static/PrayerOfHannah.css">
 </head>
 <body>
-    <h1>Prayer of Hannah: Collections</h1>
+    <h1>Prayer of Hannah: Song Collections</h1>
 
 	<table class="collection_list">
-		<caption>Collections of Songs/Hymns eg Hymn books</caption>
+		<caption>Song Collections eg Hymn books</caption>
 		<thead>
 			<tr><th>Name</th><th>Code</th><th>Url</th></tr>
 		</thead>
 		<tbody>
-	  		{{#each collection}}
+	  		{{#each song_collection}}
 	  			<tr>
-					<th><a href="/Collection/{{id}}">{{name}}</a></th>
+					<th><a href="/SongCollection/{{id}}">{{name}}</a></th>
 					<td>{{code}}</td>
 					<td>{{url}}</td> 
 
@@ -44,7 +44,7 @@
 		</tbody>
 	</table>
 	<p>
-		<form style="display: inline;" action="/Collection/add" method="GET" enctype="application/x-www-form-urlencoded">
+		<form style="display: inline;" action="/SongCollection/add" method="GET" enctype="application/x-www-form-urlencoded">
 			<input style="display: inline;" type="submit" name="Submit" value="Add" />
 		</form>
 	</p>

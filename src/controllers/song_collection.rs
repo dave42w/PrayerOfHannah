@@ -32,7 +32,7 @@
 use axum::http::StatusCode;
 use axum::{Router, Form};
 use axum::extract::{State, Path};
-use axum::response::{IntoResponse, Redirect, Response};
+use axum::response::{IntoResponse, Redirect};
 use axum::routing::{get, post};
 
 use crate::AppState;
@@ -49,19 +49,15 @@ pub fn create_song_collection_routes() -> Router <AppState<'static>> {
     .route("/add", get(add))
     .route("/edit/:id", get(edit))
     .route("/save", post(save))
+    .route("/delete/:id", post(delete))
 }
-
-
-    // .route("/Collection/post", post(insert_collection))
-    // .route("/Collection/patch", post(update_collection))
-    // .route("/Collection/delete/:id", post(delete_collection))
 
 pub async fn list(state: State<AppState<'_>>) -> impl IntoResponse {
     let song_collections = song_collection::list_all(&state.pool).await;
     render_into_response(state, "song_collection_list.html", &song_collections)
 }
 
-pub async fn display(state: State<AppState<'_>>, Path(id): Path<String>) -> impl IntoResponse {
+pub async fn display(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
     let song_collection = song_collection::select_by_id(&state.pool, &id).await;
     render_into_response(state, "song_collection_display.html", &song_collection)
 }
@@ -71,7 +67,7 @@ pub async fn add(state: State<AppState<'_>>) -> impl IntoResponse {
     render_into_response(state, "song_collection_form.html", &song_collection)
 }
 
-pub async fn edit(state: State<AppState<'_>>, Path(id): Path<String>) -> impl IntoResponse {
+pub async fn edit(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
     let song_collection = song_collection::select_by_id(&state.pool, &id).await;
     render_into_response(state, "song_collection_form.html", &song_collection)
 }
@@ -83,65 +79,9 @@ pub async fn save(state: State<AppState<'_>>, Form(input): Form<SongCollection>)
     }
 }
 
-
-
-// pub async fn insert_collection(State(state): State<AppState<'_>>, Form(input): Form<BasicCollectionModel>) -> impl IntoResponse {
-//     let s = state;
-
-//     let am = input.into_active_model();
-
-//     am.insert(&s.db).await.expect("could not insert");
-
-//     Redirect::to("/Collection")
-// }
-
-// pub async fn edit_collection_form(State(state): State<AppState<'_>>, Path(id): Path<String>) -> impl IntoResponse {
-//     let s = state;
-//     let i = id.parse::<i32>().unwrap();
-	
-//     let collection = Collection::find_by_id(i).one(&s.db).await
-//     .expect("could not find the Collection");
-//     let m = collection.unwrap();
-
-//     let ms: Vec<song::Model> = Song::find().filter(song::Column::CollectionId.eq(i)).order_by_asc(song::Column::Number).all(&s.db).await
-//     .expect("could not find any Songs");
-
-//     let cf = CollectionForm {
-//         method: "patch".to_string(),
-//         id: m.id,
-//         name: m.name.to_string(),
-//         code: m.code.to_string(),
-//         url: m.url.to_string(),
-//         song: ms,
-//     };
-
-//     Html(s.handlebars.render("collection_form.html", &cf).unwrap()).into_response()
-// }
-
-// pub async fn update_collection(State(state): State<AppState<'_>>, Form(input): Form<BasicCollectionModel>) -> impl IntoResponse {
-//     let s = state;
-    
-//     let i = input.id.to_owned();
-//     let collection = Collection::find_by_id(i).one(&s.db).await
-//     .expect("could not find the Collection");
-//     let mut am: collection::ActiveModel = collection.unwrap().into();    
-	
-//     am.name = Set(input.name.to_owned());
-//     am.code = Set(input.code.to_owned());
-//     am.url = Set(input.url.to_owned());
-    
-//     am.update(&s.db).await.expect("could not update");
-//     Redirect::to("/Collection")    
-// }
-
-// pub async fn delete_collection(State(state): State<AppState<'_>>, Path(id): Path<String>) -> impl IntoResponse {
-//     let s = state;
-    
-//     let i = id.parse::<i32>().unwrap();
-//     let collection = Collection::find_by_id(i).one(&s.db).await
-//     .expect("could not find the Collection");
-//     let am: collection::ActiveModel = collection.unwrap().into();    
-	 
-//     am.delete(&s.db).await.expect("could not delete");
-//     Redirect::to("/Collection")        
-// }
+pub async fn delete(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
+    match song_collection::delete(&state.pool, &id).await {
+        Ok(_) => Redirect::to("/SongCollection").into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to Delete. Error: {:?}", e)).into_response(),
+    }
+}

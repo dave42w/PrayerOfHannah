@@ -18,26 +18,6 @@
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
 
-use handlebars::{Handlebars, HelperDef, Helper, Context, RenderContext, Output, HelperResult, JsonRender};
 
-
-#[derive(Clone, Copy)]
-struct UpperHelper;
-
-impl HelperDef for UpperHelper {
-    fn call<'reg: 'rc, 'rc>(&self, h: &Helper, _: &Handlebars, _: &Context, _rc: &mut RenderContext, out: &mut dyn Output) -> HelperResult {
-      let param = h.param(0).unwrap();
-  
-      out.write(param.value().render().to_uppercase().as_ref())?;
-      Ok(())
-    }
-  }
-
-pub fn get_initialized_handlebars(template_dir: String) -> Handlebars<'static> {
-    let mut handlebars: Handlebars= Handlebars::new();
-    handlebars.register_helper("upper", Box::new(UpperHelper));    
-
-    handlebars.register_templates_directory(".hbs", template_dir).unwrap();
-
-    return handlebars
-}
+pub mod song_collection;
+pub mod author;

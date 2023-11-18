@@ -17,32 +17,44 @@
 
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
-// use std::collections::BTreeMap;
-
-// use axum::{extract::{State, Path}, response::{IntoResponse, Html, Redirect}, Form};
-// use ::entity::collection::BasicCollection as BasicCollectionModel;
-// use ::entity::collection;
-// use ::entity::prelude::Collection;
-// use ::entity::prelude::Song;
-// use entity::song;
-// use sea_orm::{ActiveModelTrait, EntityTrait, Set, QueryOrder, IntoActiveModel, QueryFilter, ColumnTrait};
-// use serde::{Serialize, Deserialize};
-
+pub(crate) mod model;
 
 use axum::http::StatusCode;
 use axum::{Router, Form};
 use axum::extract::{State, Path};
 use axum::response::{IntoResponse, Redirect};
 use axum::routing::{get, post};
+use serde::{Serialize, Deserialize};
 
-use crate::AppState;
+use crate::utils::AppState;
 
-use crate::models::song_collection;
-use crate::models::song_collection::SongCollection;
+use crate::controllers::render_into_response;
 
-use super::render_into_response;
+#[derive(Serialize, Deserialize, Debug)]
+pub struct SongCollection {
+    pub id: String, 
+    pub code: String,
+    pub name: String,
+    pub url: Option<String>,
+}
 
-pub fn create_song_collection_routes() -> Router <AppState<'static>> {
+impl Default for SongCollection {
+    fn default() -> SongCollection {
+        SongCollection {
+            id: "".to_string(), 
+            code: "".to_string(), 
+            name: "".to_string(), 
+            url: std::option::Option::Some("".to_string())
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Default, Debug)]
+pub struct SongCollections {
+    song_collection: Vec<SongCollection>    
+}
+
+pub fn create_routes() -> Router <AppState<'static>> {
     Router::new()
     .route("/", get(list))
     .route("/:id", get(display))
@@ -53,34 +65,34 @@ pub fn create_song_collection_routes() -> Router <AppState<'static>> {
 }
 
 pub async fn list(state: State<AppState<'_>>) -> impl IntoResponse {
-    let song_collections = song_collection::list_all(&state.pool).await;
-    render_into_response(state, "song_collection_list.html", &song_collections)
+    let song_collections = model::list_all(&state.pool).await;
+    render_into_response(state, "song/song_collection/song_collection_list.html", &song_collections)
 }
 
 pub async fn display(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
-    let song_collection = song_collection::select_by_id(&state.pool, &id).await;
-    render_into_response(state, "song_collection_display.html", &song_collection)
+    let song_collection = model::select_by_id(&state.pool, &id).await;
+    render_into_response(state, "song/song_collection/song_collection_display.html", &song_collection)
 }
 
 pub async fn add(state: State<AppState<'_>>) -> impl IntoResponse {
     let song_collection = SongCollection {..Default::default()};
-    render_into_response(state, "song_collection_form.html", &song_collection)
+    render_into_response(state, "song/song_collection/song_collection_form.html", &song_collection)
 }
 
 pub async fn edit(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
-    let song_collection = song_collection::select_by_id(&state.pool, &id).await;
-    render_into_response(state, "song_collection_form.html", &song_collection)
+    let song_collection = model::select_by_id(&state.pool, &id).await;
+    render_into_response(state, "song/song_collection/song_collection_form.html", &song_collection)
 }
 
 pub async fn save(state: State<AppState<'_>>, Form(input): Form<SongCollection>) -> impl IntoResponse {
-    match song_collection::save(&state.pool, &input.id, &input.code, &input.name, &input.url).await {
+    match model::save(&state.pool, &input.id, &input.code, &input.name, &input.url).await {
         Ok(_) => Redirect::to("/SongCollection").into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to Save. Error: {:?}", e)).into_response(),
     }
 }
 
 pub async fn delete(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
-    match song_collection::delete(&state.pool, &id).await {
+    match model::delete(&state.pool, &id).await {
         Ok(_) => Redirect::to("/SongCollection").into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to Delete. Error: {:?}", e)).into_response(),
     }

@@ -17,32 +17,11 @@
 
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
-use serde::{Serialize, Deserialize};
 use sqlx::{self, Pool, Sqlite, Error, sqlite::SqliteQueryResult};
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct SongCollection {
-    pub id: String, 
-    pub code: String,
-    pub name: String,
-    pub url: Option<String>,
-}
+use crate::song::song_collection::SongCollection;
 
-impl Default for SongCollection {
-    fn default() -> SongCollection {
-        SongCollection {
-            id: "".to_string(), 
-            code: "".to_string(), 
-            name: "".to_string(), 
-            url: std::option::Option::Some("".to_string())
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Default, Debug)]
-pub struct SongCollections {
-    song_collection: Vec<SongCollection>    
-}
+use super::SongCollections;
 
 
 pub async fn exists(pool: &Pool<Sqlite>, code: &str) -> bool {
@@ -102,17 +81,17 @@ pub async fn insert_after_check(pool: &Pool<Sqlite>, code: &str, name: &str, url
     Ok(())
 }
 
-pub async fn select_id(pool: &Pool<Sqlite>, code: &str) -> Result<String, Error> {
-    let record = sqlx::query!("SELECT id from SongCollection where code = ?1", code).fetch_optional(pool).await?;
-    match record {
-        Some(r) => {
-            Ok(r.id.into())
-        }
-        None => {
-            Err(sqlx::Error::RowNotFound)
-        }
-    }
-}
+// pub async fn select_id(pool: &Pool<Sqlite>, code: &str) -> Result<String, Error> {
+//     let record = sqlx::query!("SELECT id from SongCollection where code = ?1", code).fetch_optional(pool).await?;
+//     match record {
+//         Some(r) => {
+//             Ok(r.id.into())
+//         }
+//         None => {
+//             Err(sqlx::Error::RowNotFound)
+//         }
+//     }
+// }
 
 pub async fn list_all(pool: &Pool<Sqlite>) -> SongCollections {
     SongCollections{song_collection: sqlx::query_as!(SongCollection, "SELECT id, code, name, url from SongCollection ORDER BY name").fetch_all(pool).await.unwrap_or_default()}

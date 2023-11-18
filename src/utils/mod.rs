@@ -17,20 +17,32 @@
 
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
-pub(crate) mod home;
-use axum::{extract::State, http::StatusCode, response::{Html, IntoResponse}};
-use serde::Serialize;
+use handlebars::{Handlebars, HelperDef, Helper, Context, RenderContext, Output, HelperResult, JsonRender};
+use sqlx::{Sqlite, Pool};
 
-use crate::AppState;
+#[derive(Clone)]
+pub struct AppState<'a> {
+    pub handlebars: Handlebars<'a>,
+    pub pool: Pool<Sqlite>,
+}
 
+#[derive(Clone, Copy)]
+struct UpperHelper;
 
-pub fn render_into_response<T: Serialize>(state: State<AppState<'_>>, name: &str, data: &T) -> impl IntoResponse {
-    match state.handlebars.render(&name, &data) {
-        Ok(rendered) => Html(rendered).into_response(),
-        Err(error) => (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Failed to render template. Error: {error}"),
-        )
-            .into_response(),
+impl HelperDef for UpperHelper {
+    fn call<'reg: 'rc, 'rc>(&self, h: &Helper, _: &Handlebars, _: &Context, _rc: &mut RenderContext, out: &mut dyn Output) -> HelperResult {
+      let param = h.param(0).unwrap();
+  
+      out.write(param.value().render().to_uppercase().as_ref())?;
+      Ok(())
     }
+  }
+
+pub fn get_initialized_handlebars(template_base_dir: &String) -> Handlebars<'static> {
+    let mut handlebars: Handlebars= Handlebars::new();
+    handlebars.register_helper("upper", Box::new(UpperHelper));    
+
+    handlebars.register_templates_directory(".hbs", template_base_dir.to_owned()).unwrap();
+
+    return handlebars
 }

@@ -20,16 +20,18 @@
 use sqlx::{Pool, Sqlite, Error};
 
 //pub mod home;
-pub mod song_collection;
-pub mod author;
-pub mod song;
-pub mod song_author;
+// pub mod song_collection;
+// pub mod author;
+// pub mod song;
+// pub mod song_author;
+
+use crate::song::song_collection;
 
 pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
-    song_collection::seed_db(&pool).await?;
-    author::seed_db(&pool).await?;
-    song::seed_db(&pool).await?;
-    song_author::seed_db(&pool).await?;
+    song_collection::model::seed_db(&pool).await?;
+    //author::seed_db(&pool).await?;
+    //song::seed_db(&pool).await?;
+    //song_author::seed_db(&pool).await?;
     println!("");
     println!("done");
     Ok(())

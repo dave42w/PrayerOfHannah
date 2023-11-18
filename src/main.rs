@@ -17,28 +17,32 @@
 
 // Source code at https://github.com/dave42w/PrayerOfHannah
 
-use handlebars::Handlebars;
-use sqlx::{Pool, Sqlite, any::install_default_drivers, sqlite};
+use sqlx::{any::install_default_drivers, sqlite};
 use dotenvy::dotenv;
+
 use std::env;
 
-use crate::{templates::get_initialized_handlebars, models::seed_db};
+use crate::models::seed_db;
 mod routes;
 mod controllers;
-mod templates;
+//mod templates;
 mod models;
 
-#[derive(Clone)]
-pub struct AppState<'a> {
-    pub handlebars: Handlebars<'a>,
-    pub pool: Pool<Sqlite>,
-}
+
+// new structure
+
+mod song;
+mod utils;
+
+use crate::utils::AppState;
+
+
 
 #[tokio::main]
 async fn main() {
     dotenv().expect(".env file not found");
 
-    let templates_dir = env::var("TEMPLATES_DIR").expect(".env missing TEMPLATES_DIR");
+    let templates_base_dir = env::var("TEMPLATES_BASE_DIR").expect(".env missing TEMPLATES_BASE_DIR");
     let server_uri: String = env::var("SERVER_URI").expect(".env missing SERVER");
     let database_url: String = env::var("DATABASE_URL").expect(".env missing DATABASE_URL");
     install_default_drivers();
@@ -54,7 +58,7 @@ async fn main() {
     seed_db(&pool).await.expect("Data seeding fail");
 
     let state = AppState {
-        handlebars: get_initialized_handlebars(templates_dir),
+        handlebars: utils::get_initialized_handlebars(&templates_base_dir),
         pool: pool,
     };
 

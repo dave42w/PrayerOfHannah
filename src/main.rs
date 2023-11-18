@@ -25,7 +25,6 @@ use std::env;
 use crate::models::seed_db;
 mod routes;
 mod controllers;
-//mod templates;
 mod models;
 
 

@@ -23,13 +23,13 @@
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible">  
   <link rel="stylesheet" href="/static/PrayerOfHannah.css">  
-  <head><title>Prayer of Hannah: Song Collections Form</title>
+  <head><title>Prayer of Hannah: Song Collection Form</title>
 </head>
 <body>
-    <h1>Prayer of Hannah: Song Collections Form</h1>
+    <h1>Prayer of Hannah: Song Collection Form</h1>
 
 <!--Method is POST for a new place, PATCH for an update-->
-<form action="/SongCollection/save" method="POST" enctype="application/x-www-form-urlencoded">
+<form action="/Song/SongCollection/save" method="POST" enctype="application/x-www-form-urlencoded">
   <fieldset>
     <legend>Collection:</legend>
     <input type="hidden" name="id" value="{{id}}"/>

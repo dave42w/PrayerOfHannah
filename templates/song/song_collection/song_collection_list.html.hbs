@@ -35,7 +35,7 @@
 		<tbody>
 	  		{{#each song_collection}}
 	  			<tr>
-					<th><a href="/SongCollection/{{id}}">{{name}}</a></th>
+					<th><a href="/Song/SongCollection/{{id}}">{{name}}</a></th>
 					<td>{{code}}</td>
 					<td>{{url}}</td> 
 
@@ -44,7 +44,7 @@
 		</tbody>
 	</table>
 	<p>
-		<form style="display: inline;" action="/SongCollection/add" method="GET" enctype="application/x-www-form-urlencoded">
+		<form style="display: inline;" action="/Song/SongCollection/add" method="GET" enctype="application/x-www-form-urlencoded">
 			<input style="display: inline;" type="submit" name="Submit" value="Add" />
 		</form>
 	</p>

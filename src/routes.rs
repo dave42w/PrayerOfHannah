@@ -39,7 +39,7 @@ pub fn create_routes() -> Router <AppState<'static>> {
             
     .route("/", get(get_home))
 
-    .nest("/SongCollection", song::song_collection::create_routes())
+    .nest("/Song/SongCollection", song::song_collection::create_routes())
 }
       
     // .route("/Author", get(author_list))

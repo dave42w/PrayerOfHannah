@@ -17,7 +17,23 @@
 
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
+use axum::{extract::State, http::StatusCode, response::{Html, IntoResponse}};
+use serde::Serialize;
+
+use crate::AppState;
+
 pub mod home;
 pub mod song_collection;
 //pub mod author;
 //pub mod song;
+
+pub fn render_into_response<T: Serialize>(state: State<AppState<'_>>, name: &str, data: &T) -> impl IntoResponse {
+    match state.handlebars.render(&name, &data) {
+        Ok(rendered) => Html(rendered).into_response(),
+        Err(error) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Failed to render template. Error: {error}"),
+        )
+            .into_response(),
+    }
+}

@@ -20,14 +20,14 @@
 
 use std::collections::BTreeMap;
 
-use axum::extract::State;
+use axum::{extract::State, response::IntoResponse};
 
 use crate::AppState;
+use super::render_into_response;
 
-pub async fn get_home(State(state): State<AppState<'_>>) -> axum::response::Html<String> {
-    let s = state;
+pub async fn get_home(state: State<AppState<'_>>) -> impl IntoResponse {
     let mut data = BTreeMap::new();
     data.insert("Dave".to_string(), "dave".to_string());
-    s.handlebars.render("home.html", &data).unwrap().into()   
+    render_into_response(state, "home.html", &data)
 }
 

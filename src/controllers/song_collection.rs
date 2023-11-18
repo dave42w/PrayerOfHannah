@@ -32,13 +32,16 @@ use std::collections::BTreeMap;
 
 use axum::Router;
 use axum::extract::State;
-use axum::http::StatusCode;
-use axum::response::{Html, IntoResponse};
+use axum::response::IntoResponse;
 use axum::routing::get;
+
+
 
 use crate::AppState;
 
 use crate::models::song_collection;
+
+use super::render_into_response;
 
 pub fn create_song_collection_routes() -> Router <AppState<'static>> {
     Router::new()
@@ -53,20 +56,28 @@ pub fn create_song_collection_routes() -> Router <AppState<'static>> {
     // .route("/Collection/patch", post(update_collection))
     // .route("/Collection/delete/:id", post(delete_collection))
 
-pub async fn song_collection_list(State(state): State<AppState<'_>>) -> impl IntoResponse {
+pub async fn song_collection_list(state: State<AppState<'_>>) -> impl IntoResponse {
     let song_collection = song_collection::list_all(&state.pool).await;
 
     let mut data = BTreeMap::new();
     data.insert("collection".to_string(), song_collection);
-    match state.handlebars.render("collection.html", &data) {
-        Ok(rendered) => Html(rendered).into_response(),
-        Err(error) => (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Failed to render template. Error: {error}"),
-        )
-            .into_response(),
-    }
+    render_into_response(state, "collection.html", &data)
 }
+
+// pub async fn song_collection_list(State(state): State<AppState<'_>>) -> impl IntoResponse {
+//     let song_collection = song_collection::list_all(&state.pool).await;
+
+//     let mut data = BTreeMap::new();
+//     data.insert("collection".to_string(), song_collection);
+//     match state.handlebars.render("collection.html", &data) {
+//         Ok(rendered) => Html(rendered).into_response(),
+//         Err(error) => (
+//             StatusCode::INTERNAL_SERVER_ERROR,
+//             format!("Failed to render template. Error: {error}"),
+//         )
+//             .into_response(),
+//     }
+// }
 
 // #[derive(Serialize, Deserialize)]
 // struct CollectionForm {

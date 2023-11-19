@@ -19,33 +19,41 @@
 
 use sqlx::{self, sqlite::SqliteQueryResult, Error, Pool, Sqlite};
 
-use super::SongCollection;
+use super::Author;
 
-use super::SongCollections;
+use super::Authors;
 
-pub async fn exists(pool: &Pool<Sqlite>, code: &str) -> bool {
-    sqlx::query!("SELECT id from SongCollection where code = ?1", code)
-        .fetch_optional(pool)
-        .await
-        .unwrap_or_default()
-        .is_some()
+pub async fn exists(pool: &Pool<Sqlite>, display_name: &str) -> bool {
+    sqlx::query!(
+        "SELECT id from Author where display_name = ?1",
+        display_name
+    )
+    .fetch_optional(pool)
+    .await
+    .unwrap_or_default()
+    .is_some()
 }
 
-pub async fn insert(pool: &Pool<Sqlite>, code: &str, name: &str, url: &str) -> Result<(), Error> {
+pub async fn insert(
+    pool: &Pool<Sqlite>,
+    first_name: &str,
+    surname: &str,
+    display_name: &str,
+) -> Result<(), Error> {
     let id = uuid::Uuid::new_v4().to_string();
     let now = chrono::Utc::now();
 
     sqlx::query!(
         r#"
-        INSERT INTO SongCollection 
-        (id, code, name, url, created_timestamp, updated_timestamp) 
+        INSERT INTO Author 
+        (id, first_name, surname, display_name, created_timestamp, updated_timestamp) 
         VALUES
         (?1, ?2, ?3, ?4, ?5, ?6)
         "#,
         id,
-        code,
-        name,
-        url,
+        first_name,
+        surname,
+        display_name,
         now,
         now
     )
@@ -57,25 +65,25 @@ pub async fn insert(pool: &Pool<Sqlite>, code: &str, name: &str, url: &str) -> R
 pub async fn update(
     pool: &Pool<Sqlite>,
     id: &str,
-    code: &str,
-    name: &str,
-    url: &str,
+    first_name: &str,
+    surname: &str,
+    display_name: &str,
 ) -> Result<(), Error> {
     let now = chrono::Utc::now();
     sqlx::query!(
         r#"
-        UPDATE SongCollection 
-        SET code = ?2,
-            name = ?3,
-            url = ?4,
+        UPDATE Author 
+        SET first_name = ?2,
+            surname = ?3,
+            display_name = ?4,
             updated_timestamp = ?5
         WHERE 
             id = ?1
         "#,
         id,
-        code,
-        name,
-        url,
+        first_name,
+        surname,
+        display_name,
         now
     )
     .execute(pool)
@@ -86,41 +94,34 @@ pub async fn update(
 pub async fn save(
     pool: &Pool<Sqlite>,
     id: &str,
-    code: &str,
-    name: &str,
-    url: Option<String>,
+    first_name: &str,
+    surname: &str,
+    display_name: &str,
 ) -> Result<(), Error> {
-    let surl = url.unwrap_or("".to_string()).to_string();
-
-    // let mut surl = "".to_string();
-    // if url.is_some() {
-    //     surl = url.clone().unwrap()
-    // };
-
     if id.is_empty() {
-        insert(pool, code, name, &surl).await
+        insert(pool, first_name, surname, display_name).await
     } else {
-        update(pool, id, code, name, &surl).await
+        update(pool, id, first_name, surname, display_name).await
     }
 }
 
 pub async fn insert_after_check(
     pool: &Pool<Sqlite>,
-    code: &str,
-    name: &str,
-    url: &str,
+    first_name: &str,
+    surname: &str,
+    display_name: &str,
 ) -> Result<(), Error> {
-    if !exists(pool, code).await {
-        insert(pool, code, name, url).await?;
+    if !exists(pool, display_name).await {
+        insert(pool, first_name, surname, display_name).await?;
     }
     Ok(())
 }
 
-pub async fn list_all(pool: &Pool<Sqlite>) -> SongCollections {
-    SongCollections {
-        song_collections: sqlx::query_as!(
-            SongCollection,
-            "SELECT id, code, name, url from SongCollection ORDER BY name"
+pub async fn list_all(pool: &Pool<Sqlite>) -> Authors {
+    Authors {
+        authors: sqlx::query_as!(
+            Author,
+            "SELECT id, first_name, surname, display_name from Author ORDER BY display_name"
         )
         .fetch_all(pool)
         .await
@@ -128,10 +129,10 @@ pub async fn list_all(pool: &Pool<Sqlite>) -> SongCollections {
     }
 }
 
-pub async fn select_by_id(pool: &Pool<Sqlite>, id: &str) -> SongCollection {
+pub async fn select_by_id(pool: &Pool<Sqlite>, id: &str) -> Author {
     sqlx::query_as!(
-        SongCollection,
-        "SELECT id, code, name, url from SongCollection where id = ?1",
+        Author,
+        "SELECT id, first_name, surname, display_name from Author where id = ?1",
         id
     )
     .fetch_one(pool)
@@ -141,7 +142,7 @@ pub async fn select_by_id(pool: &Pool<Sqlite>, id: &str) -> SongCollection {
 
 pub async fn delete(pool: &Pool<Sqlite>, id: &str) -> Result<bool, sqlx::Error> {
     let res: Result<SqliteQueryResult, sqlx::Error> =
-        sqlx::query!("DELETE from SongCollection where id = ?1", id)
+        sqlx::query!("DELETE from Author where id = ?1", id)
             .execute(pool)
             .await;
     match res {
@@ -157,20 +158,17 @@ pub async fn delete(pool: &Pool<Sqlite>, id: &str) -> Result<bool, sqlx::Error> 
 }
 
 pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
-    insert_after_check(
-        pool,
-        "StF",
-        "Singing the Faith",
-        "https://www.methodist.org.uk/our-faith/worship/singing-the-faith-plus/",
-    )
-    .await?;
-    print!(".");
+    insert_after_check(pool, "Charles", "Wesley", "Charles Wesley").await?;
+    print!(",");
 
-    insert_after_check(pool, "H&P", "Hymns & Psalms", "").await?;
-    print!(".");
+    insert_after_check(pool, "John", "Wesley", "John Wesley").await?;
+    print!(",");
 
-    insert_after_check(pool, "SoF1", "Songs of Fellowship book 1", "").await?;
-    print!(".");
+    insert_after_check(pool, "John", "Bell", "John L. Bell").await?;
+    print!(",");
+
+    insert_after_check(pool, "Graham", "Maule", "Graham Maule").await?;
+    print!(",");
 
     Ok(())
 }

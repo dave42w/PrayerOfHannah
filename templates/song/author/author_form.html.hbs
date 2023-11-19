@@ -23,24 +23,25 @@
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible">  
   <link rel="stylesheet" href="/static/PrayerOfHannah.css">  
-  <head><title>Prayer of Hannah: Authors Form</title>
+  <head><title>Prayer of Hannah: Author Form</title>
 </head>
 <body>
-    <h1>Prayer of Hannah: Authors Form</h1>
+    <h1>Prayer of Hannah: Author Form</h1>
+    {{#if error}}<h2><b>Error: {{error}}</b></h2>{{/if}}
 
-<!--Method is POST for a new place, PATCH for an update-->
- <form action="/Author/{{method}}" method="POST" enctype="application/x-www-form-urlencoded">
+ <form action="/Song/Author/save" method="POST" enctype="application/x-www-form-urlencoded">
    <fieldset>
     <legend>Author:</legend>
 
-    <input type="hidden" name="id" value="{{id}}"/>
-    <label for="name">First Name:</label> <input type="text" name="first_name" value="{{first_name}}" autofocus /><br>
-    <label for="code">Surname:</label> <input type="text" name="surname" value="{{surname}}" /><br>
+    <input type="hidden" name="id" value="{{author.id}}"/>
+    <label for="name">First Name:</label> <input type="text" name="first_name" value="{{author.first_name}}" autofocus /><br>
+    <label for="code">Surname:</label> <input type="text" name="surname" value="{{author.surname}}" /><br>
+    <label for="code">Display Name:</label> <input type="text" name="display_name" value="{{author.display_name}}" /><br>
     <input type="submit" name="Submit" value="Save" />
   </fieldset>
 </form> 
 
-<p><a href="/Author">Back to Authors</a></p>
+<p><a href="/Song/Author">Back to Authors</a></p>
 <p><a href="/">Home</a></p>
 <p>Source code on <a href="https://codeberg.org">CodeBerg</a> at <a href="https://codeberg.org/Dave42W/PrayerOfHannah">PrayerOfHannah</a></p>
 

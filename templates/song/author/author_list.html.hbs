@@ -26,22 +26,25 @@
 </head>
 <body>
     <h1>Prayer of Hannah: Authors</h1>
+    {{#if error}}<h2><b>Error: {{error}}</b></h2>{{/if}}
 
 	<table class="author_list">
 		<caption>Authors of Songs/Hymns</caption>
 		<thead>
-			<tr><th>Name</th></tr>
+			<tr><th>Surname, First Name</th></tr>
+			<tr><th>Display Name</th></tr>
 		</thead>
 		<tbody>
-	  		{{#each author}}
+	  		{{#each authors.authors}}
 	  			<tr>
-					<td><a href="/Author/{{id}}"><b>{{surname}}</b>, {{first_name}}</a></td>
+					<td><a href="/Song/Author/{{id}}"><b>{{surname}}</b>, {{first_name}}</a></td>
+					<td>{{display_name}}</td>
 				</tr>
 		  {{/each}}
 		</tbody>
 	</table>
 	<p>
-		<form style="display: inline;" action="/Author/add" method="GET" enctype="application/x-www-form-urlencoded">
+		<form style="display: inline;" action="/Song/Author/add" method="GET" enctype="application/x-www-form-urlencoded">
 			<input style="display: inline;" type="submit" name="Submit" value="Add" />
 		</form>
 	</p>

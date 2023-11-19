@@ -27,7 +27,8 @@
 </head>
 <body>
     <h1>Prayer of Hannah: Song Collection Display</h1>
-	<p>Error: {{error}}</p>
+    {{#if error}}<h2><b>Error: {{error}}</b></h2>{{/if}}
+
 
     <p>Collection Name: {{song_collection.name}}</p>
     <p>Collection Short Code: {{song_collection.code}}</p>

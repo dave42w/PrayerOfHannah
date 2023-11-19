@@ -25,11 +25,12 @@ use sqlx::{Error, Pool, Sqlite};
 // pub mod song;
 // pub mod song_author;
 
+use crate::song::author;
 use crate::song::song_collection;
 
 pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
-    song_collection::model::seed_db(&pool).await?;
-    //author::seed_db(&pool).await?;
+    song_collection::model::seed_db(pool).await?;
+    author::model::seed_db(pool).await?;
     //song::seed_db(&pool).await?;
     //song_author::seed_db(&pool).await?;
     println!();

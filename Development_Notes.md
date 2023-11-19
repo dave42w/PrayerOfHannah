@@ -23,3 +23,9 @@ Looks like I should use the crate auth-login. A user should be a valid email add
 ## user roles
 
 Not yet
+
+## Next steps
+
+* The song model needs to do an inner join to get the song_collection for display.
+* The song form should load the list of song_collections (maybe via htmx)
+* need to get song_authors back into the displays

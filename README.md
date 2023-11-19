@@ -65,7 +65,7 @@ We will use a standard web browser that is set to fill the screen on a phone or 
 
 ## The Tech stuff
 
-PrayerOfHannah is written in Rust, and uses HTMx to enhance the user experience. The data is stored in Postgres.
+PrayerOfHannah is written in Rust, and uses HTMx to enhance the user experience. The data is stored in Sqlite.
 
 ## Supporting PrayerOfHannah
 

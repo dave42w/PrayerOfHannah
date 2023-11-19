@@ -45,7 +45,7 @@ impl Default for SongCollection {
             id: "".to_string(),
             code: "".to_string(),
             name: "".to_string(),
-            url: std::option::Option::Some("".to_string()),
+            url: Option::None,
         }
     }
 }
@@ -89,11 +89,7 @@ pub async fn list(
         error,
         song_collections,
     };
-    render_into_response(
-        state,
-        "song/song_collection/song_collection_list.html",
-        &page,
-    )
+    render_into_response(state, "song/song_collection/list.html", &page)
 }
 
 pub async fn display(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
@@ -102,11 +98,7 @@ pub async fn display(state: State<AppState<'_>>, id: Path<String>) -> impl IntoR
         error: "".to_string(),
         song_collection,
     };
-    render_into_response(
-        state,
-        "song/song_collection/song_collection_display.html",
-        &page,
-    )
+    render_into_response(state, "song/song_collection/display.html", &page)
 }
 
 pub async fn add(state: State<AppState<'_>>) -> impl IntoResponse {
@@ -117,11 +109,7 @@ pub async fn add(state: State<AppState<'_>>) -> impl IntoResponse {
         error: "".to_string(),
         song_collection,
     };
-    render_into_response(
-        state,
-        "song/song_collection/song_collection_form.html",
-        &page,
-    )
+    render_into_response(state, "song/song_collection/form.html", &page)
 }
 
 pub async fn edit(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
@@ -130,11 +118,7 @@ pub async fn edit(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResp
         error: "".to_string(),
         song_collection,
     };
-    render_into_response(
-        state,
-        "song/song_collection/song_collection_form.html",
-        &page,
-    )
+    render_into_response(state, "song/song_collection/form.html", &page)
 }
 
 pub async fn save(

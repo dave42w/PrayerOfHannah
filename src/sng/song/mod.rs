@@ -32,39 +32,39 @@ use crate::utils::AppState;
 use crate::controllers::render_into_response;
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Author {
+pub struct Song {
     pub id: String,
-    pub first_name: String,
-    pub surname: String,
-    pub display_name: String,
+    pub song_collection_id: String,
+    pub song_number: i64,
+    pub song_title: String,
 }
 
-impl Default for Author {
-    fn default() -> Author {
-        Author {
+impl Default for Song {
+    fn default() -> Song {
+        Song {
             id: "".to_string(),
-            first_name: "".to_string(),
-            surname: "".to_string(),
-            display_name: "".to_string(),
+            song_collection_id: "".to_string(),
+            song_number: 0,
+            song_title: "".to_string(),
         }
     }
 }
 
 #[derive(Serialize, Deserialize, Default, Debug)]
-pub struct Authors {
-    authors: Vec<Author>,
+pub struct Songs {
+    songs: Vec<Song>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct PageAuthor {
+pub struct PageSong {
     error: String,
-    author: Author,
+    song: Song,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct PageAuthors {
+pub struct PageSongs {
     error: String,
-    authors: Authors,
+    songs: Songs,
 }
 
 pub fn create_routes() -> Router<AppState<'static>> {
@@ -81,65 +81,67 @@ pub async fn list(
     state: State<AppState<'_>>,
     Query(params): Query<HashMap<String, String>>,
 ) -> impl IntoResponse {
-    let authors = model::list_all(&state.pool).await;
+    let songs = model::list_all(&state.pool).await;
     let e = params.get("error");
     let error = e.unwrap_or(&"".to_string()).to_string();
 
-    let page = PageAuthors { error, authors };
-    render_into_response(state, "song/author/author_list.html", &page)
+    let page = PageSongs { error, songs };
+    render_into_response(state, "song/song/list.html", &page)
 }
 
 pub async fn display(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
-    let author = model::select_by_id(&state.pool, &id).await;
-    let page = PageAuthor {
+    let song = model::select_by_id(&state.pool, &id).await;
+    let page = PageSong {
         error: "".to_string(),
-        author,
+        song,
     };
-    render_into_response(state, "song/author/author_display.html", &page)
+    render_into_response(state, "song/song/display.html", &page)
 }
 
 pub async fn add(state: State<AppState<'_>>) -> impl IntoResponse {
-    let author = Author {
+    let song = Song {
         ..Default::default()
     };
-    let page = PageAuthor {
+    let page = PageSong {
         error: "".to_string(),
-        author,
+        song,
     };
-    render_into_response(state, "song/author/author_form.html", &page)
+    render_into_response(state, "song/song/form.html", &page)
 }
 
 pub async fn edit(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
-    let author = model::select_by_id(&state.pool, &id).await;
-    let page = PageAuthor {
+    let song = model::select_by_id(&state.pool, &id).await;
+    let page = PageSong {
         error: "".to_string(),
-        author,
+        song,
     };
-    render_into_response(state, "song/author/author_form.html", &page)
+    render_into_response(state, "song/song/form.html", &page)
 }
 
-pub async fn save(state: State<AppState<'_>>, Form(input): Form<Author>) -> impl IntoResponse {
+pub async fn save(state: State<AppState<'_>>, Form(input): Form<Song>) -> impl IntoResponse {
+    //input.song_number.into(),
+
     match model::save(
         &state.pool,
         &input.id,
-        &input.first_name,
-        &input.surname,
-        &input.display_name,
+        &input.song_collection_id,
+        input.song_number,
+        &input.song_title,
     )
     .await
     {
-        Ok(_) => Redirect::to("/Song/Author").into_response(),
+        Ok(_) => Redirect::to("/Song/Song").into_response(),
         Err(e) => {
-            Redirect::to(&format!("/Song/Author?error=Failed to Save. {:?}", e)).into_response()
+            Redirect::to(&format!("/Song/Song?error=Failed to Save. {:?}", e)).into_response()
         }
     }
 }
 
 pub async fn delete(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResponse {
     match model::delete(&state.pool, &id).await {
-        Ok(_) => Redirect::to("/Song/Author").into_response(),
+        Ok(_) => Redirect::to("/Song/Song").into_response(),
         Err(e) => {
-            Redirect::to(&format!("/Song/Author?error=Failed to Delete. {:?}", e)).into_response()
+            Redirect::to(&format!("/Song/Song?error=Failed to Delete. {:?}", e)).into_response()
         }
     }
 }

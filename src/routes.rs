@@ -22,7 +22,7 @@ use tower_http::services::ServeFile;
 
 use crate::controllers::home::get_home;
 
-use crate::song;
+use crate::sng;
 use crate::AppState;
 
 pub fn create_routes() -> Router<AppState<'static>> {
@@ -35,23 +35,8 @@ pub fn create_routes() -> Router<AppState<'static>> {
         .route("/", get(get_home))
         .nest(
             "/Song/SongCollection",
-            song::song_collection::create_routes(),
+            sng::song_collection::create_routes(),
         )
-        .nest("/Song/Author", song::author::create_routes())
+        .nest("/Song/Author", sng::author::create_routes())
+        .nest("/Song/Song", sng::song::create_routes())
 }
-
-// .route("/Author", get(author_list))
-// .route("/Author/:id", get(author_display))
-// .route("/Author/add", get(new_author_form))
-// .route("/Author/post", post(insert_author))
-// .route("/Author/edit/:id", get(edit_author_form))
-// .route("/Author/patch", post(update_author))
-// .route("/Author/delete/:id", post(delete_author))
-
-// .route("/Song", get(song_list))
-// .route("/Song/:id", get(song_display))
-// .route("/Song/add", get(new_song_form))
-// .route("/Song/post", post(insert_song))
-// .route("/Song/edit/:id", get(edit_song_form))
-// .route("/Song/patch", post(update_song))
-// .route("/Song/delete/:id", post(delete_song))

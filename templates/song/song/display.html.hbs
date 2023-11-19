@@ -26,28 +26,27 @@
   <head><title>Prayer of Hannah: Song Form</title>
 </head>
 <body>
-    <h1>Prayer of Hannah: Song Form</h1>
+    <h1>Prayer of Hannah: Song Display</h1>
+    {{#if error}}<h2><b>Error: {{error}}</b></h2>{{/if}}
 
-          <!--Method is POST for a new place, PATCH for an update-->
-      <form action="/Song/{{method}}" method="POST" enctype="application/x-www-form-urlencoded">
-        <input type="hidden" name="id" value="{{id}}"/>
-        <fieldset>
-          <legend>Song:</legend>
-          <label for="name">Title:</label> <input type="text" name="title" value="{{title}}" autofocus /><br>
+    <p>Title: {{song.song_title}}</p>
 
-          <label for="name">Collection:</label> <select name="collection_id" default>
-            {{#each collection}}
-              <option value="{{id}}" {{#if (eq id ../collection_id)}} SELECTED {{/if}}>{{code}}: {{name}}</option>
-            {{/each}}
-          </select>
+    <p>Collection: <a href="/Song/Collection/{{song.collection_id}}">{{song.collection_name}}</a>
 
-          <label for="name">Song Number:</label> <input type="text" name="number" value="{{number}}" /><br>
-          <input type="submit" name="Submit" value="Submit It" />
-        </fieldset>
-      </form> 
-<p><a href="/Song">Back to Songs</a></p>
-<p><a href="/">Home</a></p>
-<p>Source code on <a href="https://codeberg.org">CodeBerg</a> at <a href="https://codeberg.org/Dave42W/PrayerOfHannah">PrayerOfHannah</a></p>
+    <p>Song Number: {{song.song_number}}</p>
+
+    <p>
+        <form style="display: inline;" action="/Song/Song/edit/{{song.id}}" method="GET" enctype="application/x-www-form-urlencoded">
+        <input style="display: inline;" type="submit" name="Submit" value="Edit" />
+        </form>
+        <form style="display: inline;" action="/Song/Song/delete/{{song.id}}" method="POST" enctype="application/x-www-form-urlencoded">
+        <input style="display: inline;" type="submit" name="Submit" value="Delete" />
+        </form>
+    </p>
+
+    <p><a href="/Song">Back to Songs</a></p>
+    <p><a href="/">Home</a></p>
+    <p>Source code on <a href="https://codeberg.org">CodeBerg</a> at <a href="https://codeberg.org/Dave42W/PrayerOfHannah">PrayerOfHannah</a></p>
 
 </body>
 </html>

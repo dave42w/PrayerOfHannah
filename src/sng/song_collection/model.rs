@@ -92,11 +92,6 @@ pub async fn save(
 ) -> Result<(), Error> {
     let surl = url.unwrap_or("".to_string()).to_string();
 
-    // let mut surl = "".to_string();
-    // if url.is_some() {
-    //     surl = url.clone().unwrap()
-    // };
-
     if id.is_empty() {
         insert(pool, code, name, &surl).await
     } else {
@@ -133,6 +128,17 @@ pub async fn select_by_id(pool: &Pool<Sqlite>, id: &str) -> SongCollection {
         SongCollection,
         "SELECT id, code, name, url from SongCollection where id = ?1",
         id
+    )
+    .fetch_one(pool)
+    .await
+    .unwrap_or_default()
+}
+
+pub async fn select_by_code(pool: &Pool<Sqlite>, code: &str) -> SongCollection {
+    sqlx::query_as!(
+        SongCollection,
+        "SELECT id, code, name, url from SongCollection where code = ?1",
+        code
     )
     .fetch_one(pool)
     .await

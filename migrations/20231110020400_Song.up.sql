@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS Song (
     id TEXT PRIMARY KEY NOT NULL,
     song_collection_id TEXT NOT NULL,
-    song_number INTEGER,
+    song_number INTEGER NOT NULL,
     song_title TEXT NOT NULL,
     created_timestamp TEXT NOT NULL,
     updated_timestamp TEXT NOT NULL,

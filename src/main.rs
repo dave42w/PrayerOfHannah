@@ -27,9 +27,7 @@ mod controllers;
 mod models;
 mod routes;
 
-// new structure
-
-mod song;
+mod sng;
 mod utils;
 
 use crate::utils::AppState;

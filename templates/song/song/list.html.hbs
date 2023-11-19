@@ -26,6 +26,7 @@
 </head>
 <body>
     <h1>Prayer of Hannah: Songs</h1>
+    {{#if error}}<h2><b>Error: {{error}}</b></h2>{{/if}}
 
     <table class="song_list">
       <caption>Songs/Hymns</caption>
@@ -33,11 +34,11 @@
         <tr><th>Title</th><th>Collection</th><th>Number</th><th>Author</th></tr>
       </thead>
       <tbody>
-          {{#each song}}
+          {{#each songs.songs}}
             <tr>
-            <th><a href="/Song/{{id}}">{{title}}</a></th>
-            <td><a href="/Collection/{{collection_id}}">{{collection_code}}: {{collection_name}}</a></td>
-            <td>{{number}}</td> 
+            <th><a href="/Song/Song/{{id}}">{{song_title}}</a></th>
+            <td><a href="/Song/Collection/{{collection_id}}">{{collection_code}}: {{collection_name}}</a></td>
+            <td>{{song_number}}</td> 
             <td>{{{authors}}}</td> 
           </tr>
         {{/each}}
@@ -45,7 +46,7 @@
     </table>
 
     <p>
-      <form style="display: inline;" action="/Song/add" method="GET" enctype="application/x-www-form-urlencoded">
+      <form style="display: inline;" action="/Song/Song/add" method="GET" enctype="application/x-www-form-urlencoded">
         <input style="display: inline;" type="submit" name="Submit" value="Add" />
       </form>
     </p>

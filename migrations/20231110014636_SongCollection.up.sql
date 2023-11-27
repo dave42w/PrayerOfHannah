@@ -5,9 +5,7 @@ CREATE TABLE IF NOT EXISTS SongCollection (
     name TEXT NOT NULL,
     url TEXT,
     created_timestamp TEXT NOT NULL,
-    create_by_user_id TEXT NOT NULL,
     updated_timestamp TEXT NOT NULL,
-    updated_by_user_id TEXT NOT NULL,
     PRIMARY KEY (tenant_id, id),
     FOREIGN KEY (tenant_id) REFERENCES Tenant(id),
 

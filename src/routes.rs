@@ -26,7 +26,7 @@ use axum::{
 };
 use tower_http::services::ServeFile;
 
-use crate::{controllers::home::get_home, sng, AppState};
+use crate::{admin, controllers::home::get_home, sng, AppState};
 
 pub fn create_routes() -> Router<AppState<'static>> {
     Router::new()
@@ -36,6 +36,7 @@ pub fn create_routes() -> Router<AppState<'static>> {
         )
         .route("/404.html", get_service(ServeFile::new("static/404.html")))
         .route("/", get(get_home))
+        .nest("/Admin/User", admin::user::create_routes())
         .nest(
             "/Song/SongCollection",
             sng::song_collection::create_routes(),

@@ -5,9 +5,7 @@ CREATE TABLE IF NOT EXISTS Author (
     surname TEXT NOT NULL,
     display_name TEXT NOT NULL,
     created_timestamp TEXT NOT NULL,
-    created_by_user_id TEXT NOT NULL,
     updated_timestamp TEXT NOT NULL,
-    updated_by_user_id TEXT NOT NULL,
     PRIMARY KEY (tenant_id, id),
     FOREIGN KEY (tenant_id) REFERENCES Tenant(id),
     UNIQUE (tenant_id, display_name)

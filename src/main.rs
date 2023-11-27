@@ -30,6 +30,7 @@ mod controllers;
 mod models;
 mod routes;
 
+mod admin;
 mod sng;
 mod utils;
 

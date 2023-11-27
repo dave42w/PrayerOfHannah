@@ -20,18 +20,4 @@
 
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
-use sqlx::{Error, Pool, Sqlite};
-
-use crate::admin::user;
-use crate::sng::{author, song, song_collection};
-
-pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
-    user::model::seed_db(pool).await?;
-    song_collection::model::seed_db(pool).await?;
-    author::model::seed_db(pool).await?;
-    song::model::seed_db(pool).await?;
-    //song_author::seed_db(&pool).await?;
-    println!();
-    println!("done");
-    Ok(())
-}
+pub mod user;

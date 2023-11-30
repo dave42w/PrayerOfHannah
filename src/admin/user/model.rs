@@ -128,7 +128,8 @@ pub async fn list_all(pool: &Pool<Sqlite>) -> Users {
     Users {
         users: sqlx::query_as!(
             User,
-            "SELECT id, user_name, display_name, email, mobile_phone from User ORDER BY display_name"
+            "SELECT id, user_name, display_name, email, mobile_phone from User ORDER BY \
+             display_name"
         )
         .fetch_all(pool)
         .await

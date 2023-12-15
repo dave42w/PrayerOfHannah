@@ -29,9 +29,9 @@ use crate::{
 
 pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
     user::model::seed_db(pool).await?;
-    song_collection::model::seed_db(pool).await?;
-    author::model::seed_db(pool).await?;
-    song::model::seed_db(pool).await?;
+    // song_collection::model::seed_db(pool).await?;
+    // author::model::seed_db(pool).await?;
+    // song::model::seed_db(pool).await?;
     //song_author::seed_db(&pool).await?;
     println!();
     println!("done");

@@ -51,19 +51,19 @@ impl Default for Tenant {
 
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct Tenants {
-    tenants: Vec<Tenant>,
+    pub tenants: Vec<Tenant>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PageTenant {
-    error: String,
-    tenant: Tenant,
+    pub error: String,
+    pub tenant: Tenant,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PageTenants {
-    error: String,
-    tenants: Tenants,
+    pub error: String,
+    pub tenants: Tenants,
 }
 
 pub fn create_routes() -> Router<AppState<'static>> {

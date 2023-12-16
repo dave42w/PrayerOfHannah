@@ -23,7 +23,9 @@
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible">  
   <link rel="stylesheet" href="/static/PrayerOfHannah.css">  
-  <head><title>Prayer of Hannah: User Display</title>
+  <head>
+    <title>Prayer of Hannah: User Display</title>
+    <script src="/static/htmx.min.js"></script>
 </head>
 <body>
     <h1>Prayer of Hannah: User Display</h1>
@@ -31,6 +33,7 @@
 
     <p>User name: {{user.user_name}}</p>
     <p>Display name: {{user.display_name}}</p>
+    <p>Is Admin: {{user.is_admin}}</p>
     <p>Email: {{user.email}}</p>
     <p>Mobile Phone: {{user.mobile_phone}}</p>
 
@@ -43,8 +46,10 @@
         <input style="display: inline;" type="submit" name="Submit" value="Delete" />
         </form>
     </p>
+            
+    <div id="DisplayTenants" hx-get="/Admin/UserTenant/{{user.id}}" hx-trigger="load">List of Tenants for {{user.user_name}}</div>
 
-    <p><a href="/User">Back to Users</a></p>
+    <p><a href="/Admin/User">Back to Users</a></p>
     <p><a href="/">Home</a></p>
     <p>Source code on <a href="https://codeberg.org">CodeBerg</a> at <a href="https://codeberg.org/Dave42W/PrayerOfHannah">PrayerOfHannah</a></p>
 

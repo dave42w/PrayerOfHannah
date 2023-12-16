@@ -39,6 +39,7 @@ pub struct User {
     pub id: String,
     pub user_name: String,
     pub display_name: String,
+    pub is_admin: i64,
     pub email: String,
     pub mobile_phone: String,
 }
@@ -49,6 +50,7 @@ impl Default for User {
             id: "".to_string(),
             user_name: "".to_string(),
             display_name: "".to_string(),
+            is_admin: 0,
             email: "".to_string(),
             mobile_phone: "".to_string(),
         }
@@ -131,6 +133,7 @@ pub async fn save(state: State<AppState<'_>>, Form(input): Form<User>) -> impl I
         &input.id,
         &input.user_name,
         &input.display_name,
+        input.is_admin,
         &input.email,
         &input.mobile_phone,
     )

@@ -34,9 +34,14 @@ pub fn create_routes() -> Router<AppState<'static>> {
             "/static/PrayerOfHannah.css",
             get_service(ServeFile::new("static/PrayerOfHannah.css")),
         )
+        .route(
+    "/static/htmx.min.js",
+            get_service(ServeFile::new("static/htmx.min.js")),
+        )
         .route("/404.html", get_service(ServeFile::new("static/404.html")))
         .route("/", get(get_home))
         .nest("/Admin/User", admin::user::create_routes())
+        .nest("/Admin/UserTenant", admin::user_tenant::create_routes())
         .nest("/Admin/Tenant", admin::tenant::create_routes())
         .nest(
             "/Song/SongCollection",

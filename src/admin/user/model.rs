@@ -36,6 +36,7 @@ pub async fn insert(
     pool: &Pool<Sqlite>,
     user_name: &str,
     display_name: &str,
+    is_admin: i64,
     email: &str,
     mobile_phone: &str,
 ) -> Result<(), Error> {
@@ -46,14 +47,15 @@ pub async fn insert(
     sqlx::query!(
         r#"
         INSERT INTO User 
-        (id, user_name, hash_password, display_name, email, mobile_phone, created_timestamp, updated_timestamp) 
+        (id, user_name, hash_password, display_name, is_admin, email, mobile_phone, created_timestamp, updated_timestamp) 
         VALUES
-        (?1, ?2, ?3, ?4, ?5, ?6, ?7,?8)
+        (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
         "#,
         id,
         user_name,
         p,
         display_name,
+        is_admin,
         email,
         mobile_phone,
         now,
@@ -69,6 +71,7 @@ pub async fn update(
     id: &str,
     user_name: &str,
     display_name: &str,
+    is_admin: i64,
     email: &str,
     mobile_phone: &str,
 ) -> Result<(), Error> {
@@ -78,15 +81,17 @@ pub async fn update(
         UPDATE User 
         SET user_name = ?2,
             display_name = ?3,
-            email = ?4,
-            mobile_phone = ?5,
-            updated_timestamp = ?6
+            is_admin = ?4,
+            email = ?5,
+            mobile_phone = ?6,
+            updated_timestamp = ?7
         WHERE 
             id = ?1
         "#,
         id,
         user_name,
         display_name,
+        is_admin,
         email,
         mobile_phone,
         now
@@ -101,13 +106,14 @@ pub async fn save(
     id: &str,
     user_name: &str,
     display_name: &str,
+    is_admin: i64,
     email: &str,
     mobile_phone: &str,
 ) -> Result<(), Error> {
     if id.is_empty() {
-        insert(pool, user_name, display_name, email, mobile_phone).await
+        insert(pool, user_name, display_name, is_admin, email, mobile_phone).await
     } else {
-        update(pool, id, user_name, display_name, email, mobile_phone).await
+        update(pool, id, user_name, display_name, is_admin, email, mobile_phone).await
     }
 }
 
@@ -115,11 +121,12 @@ pub async fn insert_after_check(
     pool: &Pool<Sqlite>,
     user_name: &str,
     display_name: &str,
+    is_admin: i64,
     email: &str,
     mobile_phone: &str,
 ) -> Result<(), Error> {
     if !exists(pool, user_name).await {
-        insert(pool, user_name, display_name, email, mobile_phone).await?;
+        insert(pool, user_name, display_name, is_admin, email, mobile_phone).await?;
     }
     Ok(())
 }
@@ -128,7 +135,7 @@ pub async fn list_all(pool: &Pool<Sqlite>) -> Users {
     Users {
         users: sqlx::query_as!(
             User,
-            "SELECT id, user_name, display_name, email, mobile_phone from User ORDER BY \
+            "SELECT id, user_name, display_name, is_admin, email, mobile_phone from User ORDER BY \
              display_name"
         )
         .fetch_all(pool)
@@ -140,7 +147,7 @@ pub async fn list_all(pool: &Pool<Sqlite>) -> Users {
 pub async fn select_by_id(pool: &Pool<Sqlite>, id: &str) -> User {
     sqlx::query_as!(
         User,
-        "SELECT id, user_name, display_name, email, mobile_phone from User where id = ?1",
+        "SELECT id, user_name, display_name, is_admin, email, mobile_phone from User where id = ?1",
         id
     )
     .fetch_one(pool)
@@ -170,6 +177,7 @@ pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
         pool,
         "dave42w",
         "Dave Warnock",
+        0,
         "dwarnock@gmail.com",
         "+447886553376",
     )
@@ -180,6 +188,7 @@ pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
         pool,
         "dw",
         "Dave (Methodist) Warnock",
+        1,
         "dave.warnock@methodist.org.uk",
         "+447886553376",
     )

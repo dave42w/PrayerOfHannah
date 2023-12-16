@@ -23,27 +23,32 @@
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible">  
   <link rel="stylesheet" href="/static/PrayerOfHannah.css">
-  <head><title>Prayer of Hannah</title>
 </head>
 <body>
-    <h1>Home</h1>
-    <p>Welcome to Prayer of Hannah</p>
-
-    <p>Admin</p>
-    <ul>
-        <li><a href="/Admin/User">Users</a></li>
-        <li><a href="/Admin/Tenant">Tenants</a></li>
-    </ul>
-
-
-
-    <p>Database Maintenance</p>
-    <ul>
-        <li><a href="/Song/SongCollection">Song Collections</a> (eg Singing the Faith)</li>
-        <li><a href="/Song/Author">Authors</a></li>
-        <li><a href="/Song/Song">Songs</a></li>
-    </ul>
+    <h1>Prayer of Hannah: Tenants</h1>
+    {{#if error}}<h2><b>Error: {{error}}</b></h2>{{/if}}
+    
+	<table class="tenant_list">
+		<caption>Tenants</caption>
+		<thead>
+			<tr>
+                <th>Tenant Name</th>
+            </tr>
+		</thead>
+		<tbody>
+	  		{{#each tenants.tenants}}
+	  			<tr>
+					<td><a href="/Admin/Tenant/{{id}}">{{name}}</a></td>
+				</tr>
+		  {{/each}}
+		</tbody>
+	</table>
+	<p>
+		<form style="display: inline;" action="/Admin/Tenant/add" method="GET" enctype="application/x-www-form-urlencoded">
+			<input style="display: inline;" type="submit" name="Submit" value="Add" />
+		</form>
+	</p>
+    <p><a href="/">Home</a></p>
     <p>Source code on <a href="https://codeberg.org">CodeBerg</a> at <a href="https://codeberg.org/Dave42W/PrayerOfHannah">PrayerOfHannah</a></p>
-
 </body>
 </html>

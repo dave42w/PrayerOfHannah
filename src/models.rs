@@ -23,9 +23,11 @@
 use sqlx::{Error, Pool, Sqlite};
 
 use crate::admin::user;
+use crate::admin::tenant;
 
 pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
     user::model::seed_db(pool).await?;
+    tenant::model::seed_db(pool).await?;
     // song_collection::model::seed_db(pool).await?;
     // author::model::seed_db(pool).await?;
     // song::model::seed_db(pool).await?;

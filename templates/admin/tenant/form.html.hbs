@@ -22,28 +22,25 @@
 <html>
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible">  
-  <link rel="stylesheet" href="/static/PrayerOfHannah.css">
-  <head><title>Prayer of Hannah</title>
+  <link rel="stylesheet" href="/static/PrayerOfHannah.css">  
+  <head><title>Prayer of Hannah: Tenant Form</title>
 </head>
 <body>
-    <h1>Home</h1>
-    <p>Welcome to Prayer of Hannah</p>
+    <h1>Prayer of Hannah: Tenant Form</h1>
+    {{#if error}}<h2><b>Error: {{error}}</b></h2>{{/if}}
 
-    <p>Admin</p>
-    <ul>
-        <li><a href="/Admin/User">Users</a></li>
-        <li><a href="/Admin/Tenant">Tenants</a></li>
-    </ul>
+      <form action="/Admin/Tenant/save" method="POST" enctype="application/x-www-form-urlencoded">
+        <input type="hidden" name="id" value="{{tenant.id}}"/>
+        <fieldset>
+          <legend>Tenant:</legend>
+          <label for="name">Tenant Name:</label> <input type="text" name="name" value="{{tenant.name}}" autofocus /><br>
 
-
-
-    <p>Database Maintenance</p>
-    <ul>
-        <li><a href="/Song/SongCollection">Song Collections</a> (eg Singing the Faith)</li>
-        <li><a href="/Song/Author">Authors</a></li>
-        <li><a href="/Song/Song">Songs</a></li>
-    </ul>
-    <p>Source code on <a href="https://codeberg.org">CodeBerg</a> at <a href="https://codeberg.org/Dave42W/PrayerOfHannah">PrayerOfHannah</a></p>
+          <input type="submit" name="Submit" value="Submit It" />
+        </fieldset>
+      </form> 
+<p><a href="/Admin/Tenant">Back to tenants</a></p>
+<p><a href="/">Home</a></p>
+<p>Source code on <a href="https://codeberg.org">CodeBerg</a> at <a href="https://codeberg.org/Dave42W/PrayerOfHannah">PrayerOfHannah</a></p>
 
 </body>
 </html>

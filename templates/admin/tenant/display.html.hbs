@@ -22,27 +22,26 @@
 <html>
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible">  
-  <link rel="stylesheet" href="/static/PrayerOfHannah.css">
-  <head><title>Prayer of Hannah</title>
+  <link rel="stylesheet" href="/static/PrayerOfHannah.css">  
+  <head><title>Prayer of Hannah: Tenant Display</title>
 </head>
 <body>
-    <h1>Home</h1>
-    <p>Welcome to Prayer of Hannah</p>
+    <h1>Prayer of Hannah: Tenant Display</h1>
+    {{#if error}}<h2><b>Error: {{error}}</b></h2>{{/if}}
 
-    <p>Admin</p>
-    <ul>
-        <li><a href="/Admin/User">Users</a></li>
-        <li><a href="/Admin/Tenant">Tenants</a></li>
-    </ul>
+    <p>Tenant name: {{tenant.name}}</p>
 
+    <p>
+        <form style="display: inline;" action="/Admin/Tenant/edit/{{tenant.id}}" method="GET" enctype="application/x-www-form-urlencoded">
+        <input style="display: inline;" type="submit" name="Submit" value="Edit" />
+        </form>
+        <form style="display: inline;" action="/Admin/Tenant/delete/{{tenant.id}}" method="POST" enctype="application/x-www-form-urlencoded">
+        <input style="display: inline;" type="submit" name="Submit" value="Delete" />
+        </form>
+    </p>
 
-
-    <p>Database Maintenance</p>
-    <ul>
-        <li><a href="/Song/SongCollection">Song Collections</a> (eg Singing the Faith)</li>
-        <li><a href="/Song/Author">Authors</a></li>
-        <li><a href="/Song/Song">Songs</a></li>
-    </ul>
+    <p><a href="/Tenant">Back to tenants</a></p>
+    <p><a href="/">Home</a></p>
     <p>Source code on <a href="https://codeberg.org">CodeBerg</a> at <a href="https://codeberg.org/Dave42W/PrayerOfHannah">PrayerOfHannah</a></p>
 
 </body>

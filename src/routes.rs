@@ -37,6 +37,7 @@ pub fn create_routes() -> Router<AppState<'static>> {
         .route("/404.html", get_service(ServeFile::new("static/404.html")))
         .route("/", get(get_home))
         .nest("/Admin/User", admin::user::create_routes())
+        .nest("/Admin/Tenant", admin::tenant::create_routes())
         .nest(
             "/Song/SongCollection",
             sng::song_collection::create_routes(),

@@ -22,12 +22,11 @@
 
 pub(crate) mod model;
 
-
-
 use axum::{
     extract::{Path, State},
-    response::{IntoResponse},
-    routing::{get}, Router,
+    response::IntoResponse,
+    routing::get,
+    Router,
 };
 use serde::{Deserialize, Serialize};
 
@@ -67,40 +66,45 @@ pub fn create_routes() -> Router<AppState<'static>> {
         .route("/:id", get(display))
         .route("/in/:uid/:tid", get(add))
         .route("/out/:uid/:tid", get(delete))
-        //.route("/add", get(add))
-        //.route("/edit/:id", get(edit))
-        //.route("/save", post(save))
-        //.route("/delete/:id", post(delete))
+    //.route("/add", get(add))
+    //.route("/edit/:id", get(edit))
+    //.route("/save", post(save))
+    //.route("/delete/:id", post(delete))
     //.route("/password/:id", get(get_password))
     //.route("/password/:id", post(set_password))
 }
 
-pub async fn display(
-    state: State<AppState<'_>>, path_user_id: Path<String>
-) -> impl IntoResponse {
+pub async fn display(state: State<AppState<'_>>, path_user_id: Path<String>) -> impl IntoResponse {
     let user_id = path_user_id.to_string();
     let in_tenants = model::list_in(&state.pool, &user_id).await;
     let out_tenants = model::list_out(&state.pool, &user_id).await;
-    let page = PageUserTenants{user_id, in_tenants, out_tenants};
+    let page = PageUserTenants {
+        user_id,
+        in_tenants,
+        out_tenants,
+    };
     render_into_response(state, "admin/user_tenant/list_tenants.html", &page)
 }
 
 pub async fn add(
-    state: State<AppState<'_>>, Path((user_id, tenant_id)): Path<(String, String)>
+    state: State<AppState<'_>>,
+    Path((user_id, tenant_id)): Path<(String, String)>,
 ) -> impl IntoResponse {
-    //let user_id = Path((user_id, team_id)): Path<(Uuid, Uuid)>path[0].to_string();
-    //let tenant_id = path[1].to_string();
+    //let user_id = Path((user_id, team_id)): Path<(Uuid,
+    // Uuid)>path[0].to_string(); let tenant_id = path[1].to_string();
     model::add(&state.pool, &user_id, &tenant_id).await.unwrap();
-    let _r = "/Admin/UserTenant/".to_string()+&user_id; 
+    let _r = "/Admin/UserTenant/".to_string() + &user_id;
     display(state, Path(user_id)).await
 }
 
 pub async fn delete(
-    state: State<AppState<'_>>, Path((user_id, tenant_id)): Path<(String, String)>
+    state: State<AppState<'_>>,
+    Path((user_id, tenant_id)): Path<(String, String)>,
 ) -> impl IntoResponse {
-    //let user_id = Path((user_id, team_id)): Path<(Uuid, Uuid)>path[0].to_string();
-    //let tenant_id = path[1].to_string();
-    model::delete(&state.pool, &user_id, &tenant_id).await.unwrap();
+    //let user_id = Path((user_id, team_id)): Path<(Uuid,
+    // Uuid)>path[0].to_string(); let tenant_id = path[1].to_string();
+    model::delete(&state.pool, &user_id, &tenant_id)
+        .await
+        .unwrap();
     display(state, Path(user_id)).await
 }
-

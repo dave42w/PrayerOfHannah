@@ -24,14 +24,12 @@ use sqlx::{self, Error, Pool, Sqlite};
 
 use super::{UserTenant, UserTenants};
 
-
 pub async fn list_out(pool: &Pool<Sqlite>, id: &str) -> UserTenants {
     UserTenants {
         user_tenants: sqlx::query_as!(
             UserTenant,
-            "SELECT id, name from Tenant WHERE \
-            NOT EXISTS (SELECT 1 FROM UserTenant WHERE user_id = ?1 AND tenant_id = id) \
-            ORDER BY name",
+            "SELECT id, name from Tenant WHERE NOT EXISTS (SELECT 1 FROM UserTenant WHERE user_id \
+             = ?1 AND tenant_id = id) ORDER BY name",
             id
         )
         .fetch_all(pool)
@@ -44,9 +42,8 @@ pub async fn list_in(pool: &Pool<Sqlite>, id: &str) -> UserTenants {
     UserTenants {
         user_tenants: sqlx::query_as!(
             UserTenant,
-            "SELECT id, name from Tenant WHERE \
-            EXISTS (SELECT 1 FROM UserTenant WHERE user_id = ?1 AND tenant_id = id) \
-            ORDER BY name",
+            "SELECT id, name from Tenant WHERE EXISTS (SELECT 1 FROM UserTenant WHERE user_id = \
+             ?1 AND tenant_id = id) ORDER BY name",
             id
         )
         .fetch_all(pool)
@@ -55,8 +52,7 @@ pub async fn list_in(pool: &Pool<Sqlite>, id: &str) -> UserTenants {
     }
 }
 
-pub async fn add(pool: &Pool<Sqlite>, user_id: &str, tenant_id: &str 
-) -> Result<(), Error> {
+pub async fn add(pool: &Pool<Sqlite>, user_id: &str, tenant_id: &str) -> Result<(), Error> {
     let now = chrono::Utc::now();
 
     sqlx::query!(
@@ -76,9 +72,7 @@ pub async fn add(pool: &Pool<Sqlite>, user_id: &str, tenant_id: &str
     Ok(())
 }
 
-pub async fn delete(pool: &Pool<Sqlite>, user_id: &str, tenant_id: &str 
-) -> Result<(), Error> {
-
+pub async fn delete(pool: &Pool<Sqlite>, user_id: &str, tenant_id: &str) -> Result<(), Error> {
     sqlx::query!(
         r#"
         DELETE FROM UserTenant 
@@ -90,4 +84,3 @@ pub async fn delete(pool: &Pool<Sqlite>, user_id: &str, tenant_id: &str
     .await?;
     Ok(())
 }
-

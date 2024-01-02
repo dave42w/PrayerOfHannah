@@ -35,7 +35,7 @@ pub fn create_routes() -> Router<AppState<'static>> {
             get_service(ServeFile::new("static/PrayerOfHannah.css")),
         )
         .route(
-    "/static/htmx.min.js",
+            "/static/htmx.min.js",
             get_service(ServeFile::new("static/htmx.min.js")),
         )
         .route("/404.html", get_service(ServeFile::new("static/404.html")))

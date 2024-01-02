@@ -113,7 +113,16 @@ pub async fn save(
     if id.is_empty() {
         insert(pool, user_name, display_name, is_admin, email, mobile_phone).await
     } else {
-        update(pool, id, user_name, display_name, is_admin, email, mobile_phone).await
+        update(
+            pool,
+            id,
+            user_name,
+            display_name,
+            is_admin,
+            email,
+            mobile_phone,
+        )
+        .await
     }
 }
 

@@ -21,7 +21,8 @@
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
 use handlebars::{
-    Context, Handlebars, Helper, HelperDef, HelperResult, JsonRender, Output, RenderContext, DirectorySourceOptions,
+    Context, DirectorySourceOptions, Handlebars, Helper, HelperDef, HelperResult, JsonRender,
+    Output, RenderContext,
 };
 use sqlx::{Pool, Sqlite};
 

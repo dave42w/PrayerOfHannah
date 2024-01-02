@@ -53,6 +53,7 @@ impl HelperDef for UpperHelper {
 
 pub fn get_initialized_handlebars(template_base_dir: &String) -> Handlebars<'static> {
     let mut handlebars: Handlebars = Handlebars::new();
+    // warn about using undefined variables in template
     handlebars.set_strict_mode(true);
     handlebars.register_helper("upper", Box::new(UpperHelper));
     let dir_options: DirectorySourceOptions = Default::default();

@@ -32,10 +32,7 @@ pub async fn exists(pool: &Pool<Sqlite>, name: &str) -> bool {
         .is_some()
 }
 
-pub async fn insert(
-    pool: &Pool<Sqlite>,
-    name: &str,
-) -> Result<(), Error> {
+pub async fn insert(pool: &Pool<Sqlite>, name: &str) -> Result<(), Error> {
     let id = uuid::Uuid::new_v4().to_string();
     let now = chrono::Utc::now();
 
@@ -56,11 +53,7 @@ pub async fn insert(
     Ok(())
 }
 
-pub async fn update(
-    pool: &Pool<Sqlite>,
-    id: &str,
-    name: &str,
-) -> Result<(), Error> {
+pub async fn update(pool: &Pool<Sqlite>, id: &str, name: &str) -> Result<(), Error> {
     let now = chrono::Utc::now();
     sqlx::query!(
         r#"
@@ -79,11 +72,7 @@ pub async fn update(
     Ok(())
 }
 
-pub async fn save(
-    pool: &Pool<Sqlite>,
-    id: &str,
-    name: &str,
-) -> Result<(), Error> {
+pub async fn save(pool: &Pool<Sqlite>, id: &str, name: &str) -> Result<(), Error> {
     if id.is_empty() {
         insert(pool, name).await
     } else {
@@ -91,10 +80,7 @@ pub async fn save(
     }
 }
 
-pub async fn insert_after_check(
-    pool: &Pool<Sqlite>,
-    name: &str,
-) -> Result<(), Error> {
+pub async fn insert_after_check(pool: &Pool<Sqlite>, name: &str) -> Result<(), Error> {
     if !exists(pool, name).await {
         insert(pool, name).await?;
     }
@@ -103,26 +89,18 @@ pub async fn insert_after_check(
 
 pub async fn list_all(pool: &Pool<Sqlite>) -> Tenants {
     Tenants {
-        tenants: sqlx::query_as!(
-            Tenant,
-            "SELECT id, name from Tenant ORDER BY \
-             name"
-        )
-        .fetch_all(pool)
-        .await
-        .unwrap_or_default(),
+        tenants: sqlx::query_as!(Tenant, "SELECT id, name from Tenant ORDER BY name")
+            .fetch_all(pool)
+            .await
+            .unwrap_or_default(),
     }
 }
 
 pub async fn select_by_id(pool: &Pool<Sqlite>, id: &str) -> Tenant {
-    sqlx::query_as!(
-        Tenant,
-        "SELECT id, name from Tenant where id = ?1",
-        id
-    )
-    .fetch_one(pool)
-    .await
-    .unwrap_or_default()
+    sqlx::query_as!(Tenant, "SELECT id, name from Tenant where id = ?1", id)
+        .fetch_one(pool)
+        .await
+        .unwrap_or_default()
 }
 
 pub async fn delete(pool: &Pool<Sqlite>, id: &str) -> Result<bool, sqlx::Error> {
@@ -143,25 +121,13 @@ pub async fn delete(pool: &Pool<Sqlite>, id: &str) -> Result<bool, sqlx::Error> 
 }
 
 pub async fn seed_db(pool: &Pool<Sqlite>) -> Result<(), Error> {
-    insert_after_check(
-        pool,
-        "StAndrews",
-    )
-    .await?;
+    insert_after_check(pool, "StAndrews").await?;
     print!("!");
 
-    insert_after_check(
-        pool,
-        "BrownleyGreen",
-    )
-    .await?;
+    insert_after_check(pool, "BrownleyGreen").await?;
     print!("!");
-    
-    insert_after_check(
-        pool,
-        "LawtonMoor",
-    )
-    .await?;
+
+    insert_after_check(pool, "LawtonMoor").await?;
     print!("!");
 
     Ok(())

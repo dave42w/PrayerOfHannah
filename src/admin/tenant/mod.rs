@@ -118,13 +118,7 @@ pub async fn edit(state: State<AppState<'_>>, id: Path<String>) -> impl IntoResp
 }
 
 pub async fn save(state: State<AppState<'_>>, Form(input): Form<Tenant>) -> impl IntoResponse {
-    match model::save(
-        &state.pool,
-        &input.id,
-        &input.name,
-    )
-    .await
-    {
+    match model::save(&state.pool, &input.id, &input.name).await {
         Ok(_) => Redirect::to("/Admin/Tenant").into_response(),
         Err(e) => {
             Redirect::to(&format!("/Admin/Tenant?error=Failed to Save. {:?}", e)).into_response()

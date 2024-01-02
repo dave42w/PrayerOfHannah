@@ -20,6 +20,6 @@
 
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
-pub mod user;
 pub mod tenant;
+pub mod user;
 pub mod user_tenant;

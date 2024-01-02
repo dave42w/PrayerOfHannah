@@ -21,25 +21,27 @@
 name = "prayer_of_hannah"
 version = "0.3.0"
 edition = "2021"
+license = "AGPL-3.0-or-later"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = "0.7.2"
+axum = "0.7.3"
 chrono = { version = "0.4.31", features = ["serde"] }
 color-eyre = "0.6.2"
 dotenvy = "0.15.7"
 serde = { version = "1.0.193", features = ["derive"] }
-serde_json = "1.0.108"
+serde_json = "1.0.109"
 
 libsqlite3-sys = "0.27.0"
 sqlx = { version = "0.7.3", features = ["sqlite", "runtime-tokio", "chrono", "uuid", "macros"] }
-tokio = { version = "1.35.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.35.1", features = ["macros", "rt-multi-thread"] }
 tower-http = { version = "0.5.0", features = ["fs"] }
 uuid = { version = "1.6.1", features = ["v4", "serde"] }
 
-handlebars = { version = "4.5.0", features = ["dir_source"] }
-axum-login = "0.10.2"
+handlebars = { version = "5.0.0", features = ["dir_source"] }
+axum-login = "0.12.0"
+watch = "0.2.3"
 
 
 [profile.dev.package.sqlx-macros]

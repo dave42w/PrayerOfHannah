@@ -21,7 +21,7 @@
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
 use handlebars::{
-    Context, Handlebars, Helper, HelperDef, HelperResult, JsonRender, Output, RenderContext,
+    Context, Handlebars, Helper, HelperDef, HelperResult, JsonRender, Output, RenderContext, DirectorySourceOptions,
 };
 use sqlx::{Pool, Sqlite};
 
@@ -52,10 +52,12 @@ impl HelperDef for UpperHelper {
 
 pub fn get_initialized_handlebars(template_base_dir: &String) -> Handlebars<'static> {
     let mut handlebars: Handlebars = Handlebars::new();
+    handlebars.set_strict_mode(true);
     handlebars.register_helper("upper", Box::new(UpperHelper));
+    let dir_options: DirectorySourceOptions = Default::default();
 
     handlebars
-        .register_templates_directory(".hbs", template_base_dir)
+        .register_templates_directory(template_base_dir, dir_options)
         .unwrap();
 
     handlebars

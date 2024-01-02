@@ -20,7 +20,7 @@
 
 // Source code at https://codeberg.org/Dave42W/PrayerOfHannah
 
-use sqlx::{self, sqlite::SqliteQueryResult, Error, Pool, Sqlite};
+use sqlx::{self, Error, Pool, Sqlite};
 
 use super::{UserTenant, UserTenants};
 

@@ -22,13 +22,12 @@
 
 pub(crate) mod model;
 
-use std::collections::HashMap;
+
 
 use axum::{
-    extract::{Path, Query, State},
-    response::{IntoResponse, Redirect},
-    routing::{get, post},
-    Form, Router,
+    extract::{Path, State},
+    response::{IntoResponse},
+    routing::{get}, Router,
 };
 use serde::{Deserialize, Serialize};
 
@@ -92,7 +91,7 @@ pub async fn add(
     //let user_id = Path((user_id, team_id)): Path<(Uuid, Uuid)>path[0].to_string();
     //let tenant_id = path[1].to_string();
     model::add(&state.pool, &user_id, &tenant_id).await.unwrap();
-    let r = "/Admin/UserTenant/".to_string()+&user_id; 
+    let _r = "/Admin/UserTenant/".to_string()+&user_id; 
     display(state, Path(user_id)).await
 }
 

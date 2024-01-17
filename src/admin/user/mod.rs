@@ -84,6 +84,7 @@ pub fn create_routes() -> Router<AppState<'static>> {
         .route("/delete/:id", post(delete))
     //.route("/password/:id", get(get_password))
     //.route("/password/:id", post(set_password))
+
 }
 
 pub async fn list(

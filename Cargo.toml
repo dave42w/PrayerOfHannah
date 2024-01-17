@@ -26,7 +26,6 @@ license = "AGPL-3.0-or-later"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = "0.7.4"
 chrono = { version = "0.4.31", features = ["serde"] }
 color-eyre = "0.6.2"
 dotenvy = "0.15.7"
@@ -36,13 +35,21 @@ serde_json = "1.0.111"
 libsqlite3-sys = "0.27.0"
 sqlx = { version = "0.7.3", features = ["sqlite", "runtime-tokio", "chrono", "uuid", "macros"] }
 tokio = { version = "1.35.1", features = ["macros", "rt-multi-thread"] }
-tower-http = { version = "0.5.1", features = ["fs"] }
 uuid = { version = "1.6.1", features = ["v4", "serde"] }
 
 handlebars = { version = "5.0.0", features = ["dir_source"] }
-axum-login = "0.12.0"
-watch = "0.2.3"
 
+tower = "0.4.13"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+tower-http = { version = "0.5.1", features = ["fs", "trace"] }
+tower-sessions = { version = "0.9.1", default-features = false, features = [
+    "sqlite-store",
+    "deletion-task",
+] }
+
+axum = "0.7.4"
+axum-login = "0.12.0"
 
 [profile.dev.package.sqlx-macros]
 opt-level = 3

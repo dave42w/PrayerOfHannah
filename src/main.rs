@@ -36,9 +36,26 @@ mod utils;
 
 use crate::utils::AppState;
 
+use std::{fs::File, sync::Mutex};
+use tracing::{info, warn, trace, debug};
+use tracing_subscriber;
+
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().expect(".env file not found");
+
+    let log_file = File::create("PrayerOfHannah.log")?;
+    // Start configuring a `fmt` subscriber
+    tracing_subscriber::fmt()
+        .pretty()
+        .with_file(true)
+        .with_line_number(true)
+        .with_thread_ids(true)
+        .with_target(true)
+        .with_writer(Mutex::new(log_file))
+        .init();
+
+    info!("Test count");
 
     let templates_base_dir =
         env::var("TEMPLATES_BASE_DIR").expect(".env missing TEMPLATES_BASE_DIR");
@@ -51,9 +68,9 @@ async fn main() {
         .await
         .expect("Could not create db pool");
 
-    println!("Before Migration");
+    info!("Before Migration");
     sqlx::migrate!().run(&pool).await.expect("Migration fail");
-    println!("After Migration");
+    trace!("After Migration");
 
     seed_db(&pool).await.expect("Data seeding fail");
 
@@ -62,12 +79,11 @@ async fn main() {
         pool,
     };
 
-    run(server_uri, state).await
-}
+    let routes = routes::create_routes().with_state(state);
+    warn!("routes created");
 
-pub async fn run(server_uri: String, state: AppState<'static>) {
-    let app = routes::create_routes().with_state(state);
+    let listener = tokio::net::TcpListener::bind(&server_uri).await.unwrap();
+    warn!("Listener created: {}", &server_uri);
 
-    let listener = tokio::net::TcpListener::bind(server_uri).await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    Ok(axum::serve(listener, routes).await?)
 }

@@ -25,6 +25,8 @@ use axum::{
     Router,
 };
 use tower_http::services::ServeFile;
+use tower_http::trace::{self, TraceLayer, DefaultOnResponse, DefaultMakeSpan};
+use tracing::Level;
 
 use crate::{admin, controllers::home::get_home, sng, AppState};
 
@@ -49,4 +51,12 @@ pub fn create_routes() -> Router<AppState<'static>> {
         )
         .nest("/Song/Author", sng::author::create_routes())
         .nest("/Song/Song", sng::song::create_routes())
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(trace::DefaultMakeSpan::new()
+                    .level(Level::INFO))
+                .on_response(trace::DefaultOnResponse::new()
+                    .level(Level::INFO)),
+        )
 }
+

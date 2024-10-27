@@ -19,3 +19,5 @@ Cargo.lock
 /target
 prayer-of-hannah.sqlite-shm
 prayer-of-hannah.sqlite
+PrayerOfHannah.code-workspace
+PrayerOfHannah.log

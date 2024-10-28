@@ -11,3 +11,6 @@ dependencies = [
     "robyn[templating]>=0.62.1",
     "sqlalchemy>=2.0.36",
 ]
+
+[tool.mypy]
+mypy_path = "src;tests"

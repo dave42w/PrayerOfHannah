@@ -247,7 +247,7 @@ requires-dist = [
     { name = "pytest", specifier = ">=8.3.3" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
     { name = "pytest-randomly", specifier = ">=3.16.0" },
-    { name = "robyn", extras = ["templating"], path = "../Robyn/target/wheels/robyn-0.63.0-cp312-cp312-linux_x86_64.whl" },
+    { name = "robyn", extras = ["templating"], specifier = ">=0.64.0" },
     { name = "sqlalchemy", specifier = ">=2.0.36" },
 ]
 
@@ -305,38 +305,32 @@ wheels = [
 
 [[package]]
 name = "robyn"
-version = "0.63.0"
-source = { path = "../Robyn/target/wheels/robyn-0.63.0-cp312-cp312-linux_x86_64.whl" }
+version = "0.64.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "inquirerpy" },
     { name = "multiprocess" },
     { name = "nestd" },
     { name = "orjson" },
-    { name = "pytest" },
     { name = "rustimport" },
     { name = "uvloop", marker = "platform_machine != 'armv7l' and platform_python_implementation == 'CPython' and sys_platform != 'win32'" },
     { name = "watchdog" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/36/cd/61a6870d1a133da0e6b7a9e45dc52676ab167e799148e7e016da659b3547/robyn-0.64.0.tar.gz", hash = "sha256:da2dc6fdac65767659ffb48e3c96317917c09df45a84217da5f072f68c3bec2a", size = 4284433 }
 wheels = [
-    { filename = "robyn-0.63.0-cp312-cp312-linux_x86_64.whl", hash = "sha256:d8cd7d707e561656f820064aba428f5e55aa85069fe8b7f76041f678fd4398f7" },
+    { url = "https://files.pythonhosted.org/packages/42/e2/909e46aae9ca464ffb43b7147054fc0cb9fd12cdefc00a5ec3a970edf1fc/robyn-0.64.0-cp312-cp312-macosx_10_7_x86_64.whl", hash = "sha256:ef177334ee9478554b391316a498dc52b74160ee4377eec255260ed16ca7d9e8", size = 1665983 },
+    { url = "https://files.pythonhosted.org/packages/fa/fb/f2b1a5675b61b10a28a4fc0ed6110aeff9e64e73b58b5c0c78e970ce3b0e/robyn-0.64.0-cp312-cp312-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:dcc8d8894c24a2cfe33eabe6d7ee5f076f39fef3c82ab8a292997aa7c0e9ce95", size = 3147257 },
+    { url = "https://files.pythonhosted.org/packages/f2/8b/777cb0ab2d144890dd7bb5756c38a28bab2a103f97cf6cddb3310200230c/robyn-0.64.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a07d93c3d032108f37ba53938c14c17f7481e18109240e891ab0246d2be7256c", size = 1665209 },
+    { url = "https://files.pythonhosted.org/packages/d5/c1/5f1872c3fee6ee7e37690dc560acb961b289c760b6f3dc57db91c665941f/robyn-0.64.0-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:2295b60743ab9cf5cce5d5ae52d66572ff974b17acc4d76622994265d742037c", size = 1712760 },
+    { url = "https://files.pythonhosted.org/packages/67/92/032a6bc589419f8686f2d9d3cc112edabb026cae6fc39256238a7049054d/robyn-0.64.0-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:410e6542c373348cf2670fdebc10392c575516eef5f7a66f19987b788c41c4de", size = 1831520 },
+    { url = "https://files.pythonhosted.org/packages/cf/1c/d704d70607d9230644480cc0c301e3a2fb9074cf331c9f43d4edfd0c1b7b/robyn-0.64.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:480261f7b988aa092dd3d2deb7ff038c24230ef6c10aee7cd23114937066b008", size = 1803163 },
+    { url = "https://files.pythonhosted.org/packages/b2/79/765a2bafe5b2dcde109f7493cd07dcb982126bd0a70c02dfd9a883fb7d5d/robyn-0.64.0-cp312-none-win32.whl", hash = "sha256:adcabfa349fd8f82545b68bbc89e1a07b16aea309b7785bf0b3e901a0e87fdc1", size = 1610025 },
+    { url = "https://files.pythonhosted.org/packages/49/01/d2bc914915e18b07e3a10f6271b62f03256c20afce8d46d0791dab083e74/robyn-0.64.0-cp312-none-win_amd64.whl", hash = "sha256:562e7b5c26aeed8c50f9a85a26394524129f268fb149d721bd465c3f0bf9172d", size = 1670483 },
 ]
 
 [package.optional-dependencies]
 templating = [
     { name = "jinja2" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "inquirerpy", specifier = "==0.3.4" },
-    { name = "jinja2", marker = "extra == 'templating'", specifier = "==3.0.1" },
-    { name = "multiprocess", specifier = "==0.70.14" },
-    { name = "nestd", specifier = "==0.3.1" },
-    { name = "orjson", specifier = "==3.9.15" },
-    { name = "pytest", specifier = ">=8.3.3" },
-    { name = "rustimport", specifier = "==1.3.4" },
-    { name = "uvloop", marker = "platform_machine != 'armv7l' and platform_python_implementation == 'CPython' and sys_platform != 'win32'", specifier = "~=0.19.0" },
-    { name = "watchdog", specifier = "==4.0.1" },
 ]
 
 [[package]]

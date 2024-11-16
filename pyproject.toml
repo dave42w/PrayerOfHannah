@@ -15,5 +15,4 @@ dependencies = [
 [tool.mypy]
 mypy_path = "src;tests"
 
-[tool.uv.sources]
-robyn = { path = "../Robyn/target/wheels/robyn-0.63.0-cp312-cp312-linux_x86_64.whl" }
+#[tool.uv.sources]

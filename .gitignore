@@ -21,3 +21,6 @@ prayer-of-hannah.sqlite-shm
 prayer-of-hannah.sqlite
 PrayerOfHannah.code-workspace
 PrayerOfHannah.log
+__pycache__
+/.mypy_cache
+/.pytest_cache

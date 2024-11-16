@@ -2,6 +2,9 @@
 name = "prayerofhannah"
 version = "0.2.0"
 description = "Free Software to provide Slides as a web service for Worship, Noticeboards and more."
+authors = [
+  {name = "Dave Warnock", email = "dwarnock@gmail.com"},
+]
 readme = "README.md"
 requires-python = ">=3.12.7"
 dependencies = [
@@ -13,6 +16,6 @@ dependencies = [
 ]
 
 [tool.mypy]
-mypy_path = "src;tests"
+mypy_path = "src:tests"
 
 #[tool.uv.sources]

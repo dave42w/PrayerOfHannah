@@ -27,7 +27,7 @@ def test_add_song_book(dbe) -> None:
         url: str | None = None
         expected_len: int = 1
 
-        a1: Song_Book = Song_Book(code=code, name=name, url=url)
+        a1: Song_Book = Song_Book(code=code, name=name, url=url, songs=[])
         session.add(a1)
         session.commit()
 
@@ -50,7 +50,7 @@ def test_add_song_book_with_url(dbe) -> None:
         url: str = "AddUrl"
         expected_len: int = 1
 
-        a1: Song_Book = Song_Book(code=code, name=name, url=url)
+        a1: Song_Book = Song_Book(code=code, name=name, url=url, songs=[])
         session.add(a1)
         session.commit()
 
@@ -74,7 +74,7 @@ def test_delete_song_book(dbe) -> None:
         expected_len1: int = 1
         expected_len3: int = 0
 
-        a1: Song_Book = Song_Book(code=code, name=name, url=url)
+        a1: Song_Book = Song_Book(code=code, name=name, url=url, songs=[])
         session.add(a1)
         session.commit()
 
@@ -102,7 +102,7 @@ def test_update_song_book(dbe) -> None:
         name_upd: str = "NotUpdSinging the Faith"
         expected_len: int = 1
 
-        a1: Song_Book = Song_Book(code=code, name=name, url=url)
+        a1: Song_Book = Song_Book(code=code, name=name, url=url, songs=[])
         session.add(a1)
         session.commit()
 
@@ -131,11 +131,11 @@ def test_no_duplicate_song_book_code(dbe) -> None:
         url: str | None = None
         expected_len: int = 1
 
-        a1: Song_Book = Song_Book(code=code, name=name, url=url)
+        a1: Song_Book = Song_Book(code=code, name=name, url=url, songs=[])
         session.add(a1)
         session.commit()
 
-        a2: Song_Book = Song_Book(code=code, name=name2, url=url)
+        a2: Song_Book = Song_Book(code=code, name=name2, url=url, songs=[])
         session.add(a2)
         with pytest.raises(IntegrityError):
             session.commit()
@@ -160,11 +160,11 @@ def test_no_duplicate_song_book_name(dbe) -> None:
         url: str | None = None
         expected_len: int = 1
 
-        a1: Song_Book = Song_Book(code=code, name=name, url=url)
+        a1: Song_Book = Song_Book(code=code, name=name, url=url, songs=[])
         session.add(a1)
         session.commit()
 
-        a2: Song_Book = Song_Book(code=code2, name=name, url=url)
+        a2: Song_Book = Song_Book(code=code2, name=name, url=url, songs=[])
         session.add(a2)
         with pytest.raises(IntegrityError):
             session.commit()

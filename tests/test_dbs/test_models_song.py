@@ -25,7 +25,7 @@ def test_add_song(dbe) -> None:
         title: str ="AddAnd Can It Be"
         expected_len: int = 1
 
-        a1: Song = Song(title=title, authors=[])
+        a1: Song = Song(title=title, authors=[], song_books=[])
         session.add(a1)
         session.commit()
 
@@ -46,7 +46,7 @@ def test_delete_song(dbe) -> None:
         expected_len1: int = 1
         expected_len3: int = 0
 
-        a1: Song = Song(title=title, authors=[])
+        a1: Song = Song(title=title, authors=[], song_books=[])
         session.add(a1)
         session.commit()
 
@@ -71,7 +71,7 @@ def test_update_song(dbe) -> None:
         title_upd: str ="NotUpdAnd Can It Be"
         expected_len: int = 1
 
-        a1: Song = Song(title=title, authors=[])
+        a1: Song = Song(title=title, authors=[], song_books=[])
         session.add(a1)
         session.commit()
 
@@ -96,11 +96,11 @@ def test_no_duplicate_song(dbe) -> None:
         title: str ="DupAnd Can It Be"
         expected_len: int = 1
 
-        a1: Song = Song(title=title, authors=[])
+        a1: Song = Song(title=title, authors=[], song_books=[])
         session.add(a1)
         session.commit()
 
-        a2: Song = Song(title=title, authors=[])
+        a2: Song = Song(title=title, authors=[], song_books=[])
         session.add(a2)
         with pytest.raises(IntegrityError):
             session.commit()

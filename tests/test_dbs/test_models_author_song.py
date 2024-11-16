@@ -32,7 +32,7 @@ def test_add_author_song(dbe) -> None:
         author1: Author = Author(surname=surname, first_names=first_names, songs=[])
         session.add(author1)
 
-        song1: Song = Song(title=title, authors=[])
+        song1: Song = Song(title=title, authors=[], song_books=[])
         session.add(song1)
 
         author_song1: Author_Song = Author_Song(author=author1, song=song1)
@@ -97,7 +97,7 @@ def test_del_author_song(dbe) -> None:
         author1: Author = Author(surname=surname, first_names=first_names, songs=[])
         session.add(author1)
 
-        song1: Song = Song(title=title, authors=[])
+        song1: Song = Song(title=title, authors=[], song_books=[])
         session.add(song1)
 
         author_song1: Author_Song = Author_Song(author=author1, song=song1)

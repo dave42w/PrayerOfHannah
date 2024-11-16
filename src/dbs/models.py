@@ -125,7 +125,8 @@ class Song_Book(Base):
     name: Mapped[str] = mapped_column(String(50), index=True, unique=True)              # type: ignore[misc]
     url: Mapped[Optional[str]] = mapped_column(String(200), index=True, unique=True)    # type: ignore[misc]
 
-    #songs: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song_book")    # type: ignore[misc]
+    songs: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song_book")    # type: ignore[misc]
+    #song_book_items: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song_book")   # type: ignore[misc]
 
 
 class Song(Base):
@@ -149,7 +150,7 @@ class Song(Base):
     title: Mapped[str] = mapped_column(String(100), index=True, unique=True)                # type: ignore[misc]
 
     authors: Mapped[List["Author_Song"]] = relationship(back_populates="song")              # type: ignore[misc]
-    #song_book_items: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song")   # type: ignore[misc]
+    song_books: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song")   # type: ignore[misc]
 
 
 
@@ -173,7 +174,6 @@ class Author_Song(Base):
     author: Mapped["Author"] = relationship(back_populates="songs")     # type: ignore[misc]
     song: Mapped["Song"] = relationship(back_populates="authors")       # type: ignore[misc]
 
-'''
 class Song_Book_Item(Base):
     """
     A class to represent the many to many link between song_book and song
@@ -205,11 +205,11 @@ class Song_Book_Item(Base):
     nbr: Mapped[int]                                                                    # type: ignore[misc]
     verse_order: Mapped[Optional[str]] = mapped_column(String(50))                      # type: ignore[misc]
 
-    song_book: Mapped["Song_Book"] = relationship(back_populates="song_book_items")     # type: ignore[misc]
-    song: Mapped["Song"] = relationship(back_populates="song_book_items")               # type: ignore[misc]
+    song_book: Mapped["Song_Book"] = relationship(back_populates="songs")     # type: ignore[misc]
+    song: Mapped["Song"] = relationship(back_populates="song_books")               # type: ignore[misc]
 
     #verses: Mapped[List["Verse"]] = relationship(back_populates="song_book_item")       # type: ignore[misc]
-'''
+
 
 '''
 class Verse(Base):

@@ -245,9 +245,9 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "pytest", specifier = ">=8.3.3" },
-    { name = "pytest-cov", specifier = ">=5.0.0" },
+    { name = "pytest-cov", specifier = ">=6.0.0" },
     { name = "pytest-randomly", specifier = ">=3.16.0" },
-    { name = "robyn", extras = ["templating"], specifier = ">=0.62.1" },
+    { name = "robyn", extras = ["templating"], path = "../Robyn/target/wheels/robyn-0.63.0-cp312-cp312-linux_x86_64.whl" },
     { name = "sqlalchemy", specifier = ">=2.0.36" },
 ]
 
@@ -280,15 +280,15 @@ wheels = [
 
 [[package]]
 name = "pytest-cov"
-version = "5.0.0"
+version = "6.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "coverage" },
     { name = "pytest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/74/67/00efc8d11b630c56f15f4ad9c7f9223f1e5ec275aaae3fa9118c6a223ad2/pytest-cov-5.0.0.tar.gz", hash = "sha256:5837b58e9f6ebd335b0f8060eecce69b662415b16dc503883a02f45dfeb14857", size = 63042 }
+sdist = { url = "https://files.pythonhosted.org/packages/be/45/9b538de8cef30e17c7b45ef42f538a94889ed6a16f2387a6c89e73220651/pytest-cov-6.0.0.tar.gz", hash = "sha256:fde0b595ca248bb8e2d76f020b465f3b107c9632e6a1d1705f17834c89dcadc0", size = 66945 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl", hash = "sha256:4f0764a1219df53214206bf1feea4633c3b558a2925c8b59f144f682861ce652", size = 21990 },
+    { url = "https://files.pythonhosted.org/packages/36/3b/48e79f2cd6a61dbbd4807b4ed46cb564b4fd50a76166b1c4ea5c1d9e2371/pytest_cov-6.0.0-py3-none-any.whl", hash = "sha256:eee6f1b9e61008bd34975a4d5bab25801eb31898b032dd55addc93e96fcaaa35", size = 22949 },
 ]
 
 [[package]]
@@ -305,32 +305,38 @@ wheels = [
 
 [[package]]
 name = "robyn"
-version = "0.62.1"
-source = { registry = "https://pypi.org/simple" }
+version = "0.63.0"
+source = { path = "../Robyn/target/wheels/robyn-0.63.0-cp312-cp312-linux_x86_64.whl" }
 dependencies = [
     { name = "inquirerpy" },
     { name = "multiprocess" },
     { name = "nestd" },
     { name = "orjson" },
+    { name = "pytest" },
     { name = "rustimport" },
     { name = "uvloop", marker = "platform_machine != 'armv7l' and platform_python_implementation == 'CPython' and sys_platform != 'win32'" },
     { name = "watchdog" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ca/be/8b0a8a114677b2208372adb218a848ba30c3a6305360dd2310a5721ac7b0/robyn-0.62.1.tar.gz", hash = "sha256:786c80bf0c9dc2a5f131c4d58739b8bc5500b02ff26712c754e50f6872ee25d0", size = 4276717 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f9/01/b7ba2878d7715b700823c20cba4148159233a0fc03f8495b05554774e267/robyn-0.62.1-cp312-cp312-macosx_10_7_x86_64.whl", hash = "sha256:6c5d488b1440af75d92b85574fd6c8e5c66e6d5192c6a31da229a9731bad676e", size = 1637028 },
-    { url = "https://files.pythonhosted.org/packages/79/3d/326ffd302acac8cdcdbb935b51083c9cbf5d56991425019c0286311c7447/robyn-0.62.1-cp312-cp312-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:04a9d8ec392d3545f208b73aed9e8ee95e03467f5d7b49a587d18ccef9275fad", size = 3095060 },
-    { url = "https://files.pythonhosted.org/packages/bc/5c/d54cbb6110b7e016cc078c7d2ee7cf676031342a153d8e517535fc6ea6c7/robyn-0.62.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:1f81901bb5ab62f785fd652ea7fb99f39f6e1ca688d07c48a4b3016187933547", size = 1642197 },
-    { url = "https://files.pythonhosted.org/packages/e8/e1/71d697f93c4a1e901503fb8fa06ed21a7cf6a468e57c289ccebf3b07f6d1/robyn-0.62.1-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:fb01300c21086cd6750d10f8077cbef69950352bd887519844e83d4734516480", size = 1693577 },
-    { url = "https://files.pythonhosted.org/packages/6b/db/e2bc04209ea5ba0ef7490468262e27529d68aaf17f30081448d0f06feee6/robyn-0.62.1-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:bbc4ed4bea9df0c50014c58ffbf0e59d3b7344b28a94ffa31c72ededf3d11383", size = 1798075 },
-    { url = "https://files.pythonhosted.org/packages/f3/dc/e3984a552e4fef6f89e6fced5f98327fe71fdf641ba211ae40cab3214973/robyn-0.62.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4e301073b06c92c37223e30195a01b27f6169e860b3a474123b1f272decdb45d", size = 1773932 },
-    { url = "https://files.pythonhosted.org/packages/a8/07/674275b015317c49fb7b10d808dd1112c3196c6e7c0ec2be27c1850a628e/robyn-0.62.1-cp312-none-win32.whl", hash = "sha256:401e4ee963986f50e8f40d0938e16546cdebedbdb2f9aa595210ba0f619b18a4", size = 1591277 },
-    { url = "https://files.pythonhosted.org/packages/03/80/84ba531e4fdcdcbd6d1888b599fe4d172c38d8923f0b63464b847156e51e/robyn-0.62.1-cp312-none-win_amd64.whl", hash = "sha256:b18cda8bd6b791c36a2ccd6eaf889935171f07ce0c2a040f1582a58f4da21adf", size = 1653969 },
+    { filename = "robyn-0.63.0-cp312-cp312-linux_x86_64.whl", hash = "sha256:d8cd7d707e561656f820064aba428f5e55aa85069fe8b7f76041f678fd4398f7" },
 ]
 
 [package.optional-dependencies]
 templating = [
     { name = "jinja2" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "inquirerpy", specifier = "==0.3.4" },
+    { name = "jinja2", marker = "extra == 'templating'", specifier = "==3.0.1" },
+    { name = "multiprocess", specifier = "==0.70.14" },
+    { name = "nestd", specifier = "==0.3.1" },
+    { name = "orjson", specifier = "==3.9.15" },
+    { name = "pytest", specifier = ">=8.3.3" },
+    { name = "rustimport", specifier = "==1.3.4" },
+    { name = "uvloop", marker = "platform_machine != 'armv7l' and platform_python_implementation == 'CPython' and sys_platform != 'win32'", specifier = "~=0.19.0" },
+    { name = "watchdog", specifier = "==4.0.1" },
 ]
 
 [[package]]

@@ -5,12 +5,15 @@ description = "Free Software to provide Slides as a web service for Worship, Not
 readme = "README.md"
 requires-python = ">=3.12.7"
 dependencies = [
-    "pytest-cov>=5.0.0",
+    "pytest-cov>=6.0.0",
     "pytest-randomly>=3.16.0",
     "pytest>=8.3.3",
-    "robyn[templating]>=0.62.1",
+    "robyn[templating]>=0.64.0",
     "sqlalchemy>=2.0.36",
 ]
 
 [tool.mypy]
 mypy_path = "src;tests"
+
+[tool.uv.sources]
+robyn = { path = "../Robyn/target/wheels/robyn-0.63.0-cp312-cp312-linux_x86_64.whl" }

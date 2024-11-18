@@ -38,17 +38,15 @@ def test_add_song_book_item(dbe) -> None:
 
         nbr: int = 25
         verse_order: str ="V1 V2"
-        item1: Song_Book_Item = Song_Book_Item(song_id=song1.id, song_book_id=book1.id, nbr=nbr, verse_order=verse_order, song=song1, song_book=book1)
+        item1: Song_Book_Item = Song_Book_Item(nbr=nbr, verse_order=verse_order, song=song1, song_book=book1)
         session.add(item1)
         session.commit()
 
         songid: int = song1.id
         bookid: int = book1.id
-        itemid: int = item1.id
 
         assert songid, f"SongId is {songid}"
         assert bookid, f"BookId is {bookid}"
-        assert itemid, f"ItemId is {itemid}"
 
         '''
         # check only 1 row in the 3 tables

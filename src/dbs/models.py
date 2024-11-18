@@ -194,13 +194,8 @@ class Song_Book_Item(Base):
     """
     __tablename__: str = "song_book_item"
 
-    __table_args__ = (
-        UniqueConstraint("song_book_id", "song_id", name="unique_song_book_id_song_id"),
-        )
-
-    id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    song_book_id: Mapped[int] = mapped_column(ForeignKey("song_book.id"))               # type: ignore[misc]
-    song_id: Mapped[int] = mapped_column(ForeignKey("song.id"))                         # type: ignore[misc]
+    song_book_id: Mapped[int] = mapped_column(ForeignKey("song_book.id"), primary_key=True, init=False)
+    song_id: Mapped[int] = mapped_column(ForeignKey("song.id"), primary_key=True, init=False)
 
     nbr: Mapped[int]                                                                    # type: ignore[misc]
     verse_order: Mapped[Optional[str]] = mapped_column(String(50))                      # type: ignore[misc]
@@ -208,10 +203,9 @@ class Song_Book_Item(Base):
     song_book: Mapped["Song_Book"] = relationship(back_populates="songs")     # type: ignore[misc]
     song: Mapped["Song"] = relationship(back_populates="song_books")               # type: ignore[misc]
 
-    #verses: Mapped[List["Verse"]] = relationship(back_populates="song_book_item")       # type: ignore[misc]
+    verses: Mapped[List["Verse"]] = relationship(back_populates="song_book_item")       # type: ignore[misc]
 
 
-'''
 class Verse(Base):
     """
     A class to represent a Verse of a song lyrics
@@ -233,20 +227,10 @@ class Verse(Base):
         foreign _key to song_book_item
     """
     __tablename__: str = "verse"
-    id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    song_book_item_id: Mapped[int] = mapped_column(ForeignKey("song_book_item.id"))     # type: ignore[misc]
-
-    type: Mapped[str] = mapped_column(String(1))                                        # type: ignore[misc]
-    number: Mapped[int]                                                                 # type: ignore[misc]
-    lyrics: Mapped[Optional[str]] = mapped_column(String(3000))                         # type: ignore[misc]
+    song_book_id: Mapped[int] = mapped_column(ForeignKey("song_book.id"), primary_key=True, init=False)
+    song_id: Mapped[int] = mapped_column(ForeignKey("song.id"), primary_key=True, init=False)
+    type: Mapped[str] = mapped_column(String(1), primary_key=True, init=False)
+    number: Mapped[int] = mapped_column(primary_key=True, init=False)
+    lyrics: Mapped[str] = mapped_column(String(3000))                        # type: ignore[misc]
 
     song_book_item: Mapped["Song_Book_Item"] = relationship(back_populates="verses")    # type: ignore[misc]
-
-    Index(
-        "compound_index_verse",
-            "song_book_item_id",
-            "type",
-            "number",
-            unique=True,
-    )
-'''

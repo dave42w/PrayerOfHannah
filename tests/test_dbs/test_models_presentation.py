@@ -5,7 +5,6 @@ from sqlalchemy import select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 from sqlalchemy.engine import ScalarResult
-from sqlalchemy.exc import IntegrityError
 import pytest
 
 from dbs.models import Base

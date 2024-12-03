@@ -1,7 +1,9 @@
+import datetime
+
 from typing import Optional
 from typing import List
 
-from sqlalchemy import String
+from sqlalchemy import String, TIMESTAMP
 
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import MappedAsDataclass
@@ -24,7 +26,10 @@ class VerseType(StrEnum):
 
 
 class Base(MappedAsDataclass, DeclarativeBase):
-    pass
+    type_annotation_map = {
+        datetime.datetime: TIMESTAMP(timezone=True),
+    }
+
 
 '''
 Db structure
@@ -236,3 +241,19 @@ class Verse(Base):
     _table_args__ = (
                      ForeignKeyConstraint([song_book_id, song_id], [Song_Book_Item.song_book_id, Song_Book_Item.song_id], name="fk_verse_to_song_book_item"),
                     )
+
+class Presentation(Base):
+    """
+    A class to represent a Service or a Noticeboard or other form of presentation
+
+
+    Attributes
+    ----------
+    id : int
+        Primary Key, autoincremented
+
+    """
+    __tablename__: str = "presentation"
+    id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    name: Mapped[str] = mapped_column(String(50), index=True, unique=True)              # type: ignore[misc]
+    when: Mapped[datetime.datetime]                                                     # type: ignore[misc]

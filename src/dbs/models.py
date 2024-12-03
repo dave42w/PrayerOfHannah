@@ -9,7 +9,7 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
-from sqlalchemy.schema import UniqueConstraint
+from sqlalchemy.schema import UniqueConstraint, ForeignKeyConstraint
 from sqlalchemy.schema import ForeignKey
 
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -181,12 +181,10 @@ class Song_Book_Item(Base):
 
     Attributes
     ----------
-    id : int
-        Primary Key, autoincremented
     song_book_id : int
-        foreign key to song_book, part of unique index
+        foreign key to song_book, part of primary key
     song_id : int
-        foreign key to song, part of unique index
+        foreign key to song, part of primary key
     nbr : int
         the Song Nbr in this book
     verse_order : str
@@ -204,7 +202,6 @@ class Song_Book_Item(Base):
     song: Mapped["Song"] = relationship(back_populates="song_books")               # type: ignore[misc]
 
     verses: Mapped[List["Verse"]] = relationship(back_populates="song_book_item")       # type: ignore[misc]
-
 
 class Verse(Base):
     """
@@ -227,10 +224,15 @@ class Verse(Base):
         foreign _key to song_book_item
     """
     __tablename__: str = "verse"
-    song_book_id: Mapped[int] = mapped_column(ForeignKey("song_book.id"), primary_key=True, init=False)
-    song_id: Mapped[int] = mapped_column(ForeignKey("song.id"), primary_key=True, init=False)
+
+    song_book_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    song_id: Mapped[int] = mapped_column(primary_key=True, init=False)
     type: Mapped[str] = mapped_column(String(1), primary_key=True, init=False)
     number: Mapped[int] = mapped_column(primary_key=True, init=False)
     lyrics: Mapped[str] = mapped_column(String(3000))                        # type: ignore[misc]
 
     song_book_item: Mapped["Song_Book_Item"] = relationship(back_populates="verses")    # type: ignore[misc]
+
+    _table_args__ = (
+                     ForeignKeyConstraint([song_book_id, song_id], [Song_Book_Item.song_book_id, Song_Book_Item.song_id], name="fk_verse_to_song_book_item"),
+                    )

@@ -10,8 +10,8 @@ requires-python = ">=3.12.7"
 dependencies = [
     "pytest-cov>=6.0.0",
     "pytest-randomly>=3.16.0",
-    "pytest>=8.3.3",
-    "robyn[templating]>=0.64.0",
+    "pytest>=8.3.4",
+    "robyn[templating]>=0.64.2",
     "sqlalchemy>=2.0.36",
 ]
 

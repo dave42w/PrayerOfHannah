@@ -24,6 +24,13 @@ class VerseType(StrEnum):
     BRIDGE = 'b'
     ENDING = 'e'
 
+class SlideType(StrEnum):
+    SONG = 's'
+    IMAGE = 'i'
+    VIDEO = 'v'
+    TEXT = 't'
+    BLANK = 'b'
+    AUDIO = 'a'
 
 class Base(MappedAsDataclass, DeclarativeBase):
     type_annotation_map = {
@@ -131,7 +138,6 @@ class Song_Book(Base):
     url: Mapped[Optional[str]] = mapped_column(String(200), index=True, unique=True)    # type: ignore[misc]
 
     songs: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song_book")    # type: ignore[misc]
-    #song_book_items: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song_book")   # type: ignore[misc]
 
 
 class Song(Base):
@@ -257,3 +263,14 @@ class Presentation(Base):
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     name: Mapped[str] = mapped_column(String(50), index=True, unique=True)              # type: ignore[misc]
     when: Mapped[datetime.datetime]                                                     # type: ignore[misc]
+
+    slides: Mapped[List["Slide"]] = relationship(back_populates="presentation")     # type: ignore[misc]
+
+class Slide(Base):
+
+    __tablename__: str = "slide"
+    presentation_id: Mapped[int] = mapped_column(ForeignKey("presentation.id"), primary_key=True, init=False)
+    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
+    slide_type: Mapped[str] = mapped_column(String(1))          # type: ignore[misc]
+
+    presentation: Mapped["Presentation"] = relationship(back_populates="slides")       # type: ignore[misc]

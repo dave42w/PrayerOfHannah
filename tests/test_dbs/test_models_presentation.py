@@ -26,7 +26,7 @@ def test_add_presentation(dbe) -> None:
         when = datetime.now()
         expected_len: int = 1
 
-        p1: Presentation = Presentation(name=name, when=when)
+        p1: Presentation = Presentation(name=name, when=when, slides=[])
         session.add(p1)
         session.commit()
 

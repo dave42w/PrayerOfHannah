@@ -28,9 +28,8 @@ class SlideType(StrEnum):
     SONG = 's'
     IMAGE = 'i'
     VIDEO = 'v'
-    TEXT = 't'
-    BLANK = 'b'
     AUDIO = 'a'
+    TEXT = 't'
 
 class Base(MappedAsDataclass, DeclarativeBase):
     type_annotation_map = {
@@ -267,10 +266,75 @@ class Presentation(Base):
     slides: Mapped[List["Slide"]] = relationship(back_populates="presentation")     # type: ignore[misc]
 
 class Slide(Base):
-
     __tablename__: str = "slide"
     presentation_id: Mapped[int] = mapped_column(ForeignKey("presentation.id"), primary_key=True, init=False)
     slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
     slide_type: Mapped[str] = mapped_column(String(1))          # type: ignore[misc]
 
     presentation: Mapped["Presentation"] = relationship(back_populates="slides")       # type: ignore[misc]
+    songs: Mapped[List["Slide_Song"]] = relationship(back_populates="slide")     # type: ignore[misc]
+    images: Mapped[List["Slide_Image"]] = relationship(back_populates="slide")     # type: ignore[misc]
+    videos: Mapped[List["Slide_Video"]] = relationship(back_populates="slide")     # type: ignore[misc]
+    audios: Mapped[List["Slide_Audio"]] = relationship(back_populates="slide")     # type: ignore[misc]
+    texts: Mapped[List["Slide_Text"]] = relationship(back_populates="slide")     # type: ignore[misc]
+
+class Slide_Song(Base):
+    __tablename__: str = "slide_song"
+    presentation_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
+    song_id: Mapped[int] = mapped_column(ForeignKey("song.id"), init=False)
+
+    slide: Mapped["Slide"] = relationship(back_populates="songs")       # type: ignore[misc]
+
+    _table_args__ = (
+                     ForeignKeyConstraint([presentation_id, slide_nbr], [Slide.presentation_id, Slide.slide_nbr], name="fk_slide_song"),
+                    )
+
+class Slide_Image(Base):
+    __tablename__: str = "slide_image"
+    presentation_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
+    image_filename: Mapped[str] = mapped_column(String(100))          # type: ignore[misc]
+
+    slide: Mapped["Slide"] = relationship(back_populates="images")       # type: ignore[misc]
+
+    _table_args__ = (
+                     ForeignKeyConstraint([presentation_id, slide_nbr], [Slide.presentation_id, Slide.slide_nbr], name="fk_slide_image"),
+                    )
+
+
+class Slide_Video(Base):
+    __tablename__: str = "slide_video"
+    presentation_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
+    video_filename: Mapped[str] = mapped_column(String(100))          # type: ignore[misc]
+
+    slide: Mapped["Slide"] = relationship(back_populates="videos")       # type: ignore[misc]
+
+    _table_args__ = (
+                     ForeignKeyConstraint([presentation_id, slide_nbr], [Slide.presentation_id, Slide.slide_nbr], name="fk_slide_video"),
+                    )
+
+class Slide_Audio(Base):
+    __tablename__: str = "slide_audio"
+    presentation_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
+    audio_filename: Mapped[str] = mapped_column(String(100))          # type: ignore[misc]
+
+    slide: Mapped["Slide"] = relationship(back_populates="audios")       # type: ignore[misc]
+
+    _table_args__ = (
+                     ForeignKeyConstraint([presentation_id, slide_nbr], [Slide.presentation_id, Slide.slide_nbr], name="fk_slide_audio"),
+                    )
+
+class Slide_Text(Base):
+    __tablename__: str = "slide_text"
+    presentation_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
+    md_text: Mapped[str] = mapped_column(String(3000))          # type: ignore[misc]
+
+    slide: Mapped["Slide"] = relationship(back_populates="texts")       # type: ignore[misc]
+
+    _table_args__ = (
+                     ForeignKeyConstraint([presentation_id, slide_nbr], [Slide.presentation_id, Slide.slide_nbr], name="fk_slide_text"),
+                    )

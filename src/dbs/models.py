@@ -65,7 +65,13 @@ A Song_Book_Item can have zero, one or many Verses. Each Verse has an enumerated
 
 A Song_Book_Item can have zero, one or many media files. These have an
 enumerated type to control what is displayed
-(BI=Background image, V=Video without lyrics, VL=Video with Lyrics, A=Audio only, AS=Audio with Singing, BV=Background video)
+- BI=Background image
+- V=Video without lyrics
+- VL=Video with Lyrics
+- A=Audio only
+- AS=Audio with Singing
+- BV=Background video
+
 They also have a tune name and a verse count
 
 """

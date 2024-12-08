@@ -13,6 +13,7 @@ dependencies = [
     "pytest>=8.3.4",
     "robyn[templating]>=0.64.2",
     "sqlalchemy>=2.0.36",
+    "pre-commit>=4.0.1",
 ]
 
 [tool.mypy]

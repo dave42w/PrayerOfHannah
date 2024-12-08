@@ -122,7 +122,9 @@ def test_del_author_song(dbe) -> None:
         l3 = len(s3.all())
         assert l3 == expected_len, f"Author Count is {l3} should be {expected_len}"
 
-        s4: ScalarResult[Author_Song] = session.scalars(select(Author_Song).where(Author_Song.author_id == aid, Author_Song.song_id == sid))
+        s4: ScalarResult[Author_Song] = session.scalars(
+            select(Author_Song).where(Author_Song.author_id == aid, Author_Song.song_id == sid)
+        )
         r4: Author_Song = cast(Author_Song, s4.first())
         session.delete(r4)
 

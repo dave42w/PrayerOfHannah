@@ -96,8 +96,12 @@ def test_update_author(dbe) -> None:
         s4: ScalarResult[Author] = session.scalars(select(Author))
         r4 = cast(Author, s4.first())
         assert r4.surname == surname_upd, "Update Author Surname is {r.surname} should be {surname_upd}"
-        assert r4.first_names == first_names_upd, "Update Author first_names is {r.first_names} should be {first_names_upd}"
-        assert r4.display_name == display_name_upd, "Update Author display_name is {r.display_name} should be {display_name_upd}"
+        assert (
+            r4.first_names == first_names_upd
+        ), "Update Author first_names is {r.first_names} should be {first_names_upd}"
+        assert (
+            r4.display_name == display_name_upd
+        ), "Update Author display_name is {r.display_name} should be {display_name_upd}"
         assert not r4.songs, "Should have empty songs is {r4.songs}"
 
 

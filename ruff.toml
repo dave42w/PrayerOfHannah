@@ -1,7 +1,7 @@
 # Support Python 3.12+.
 target-version = "py312"
-# Set the maximum line length to 160.
-line-length = 160
+# Set the maximum line length to 120.
+line-length = 120
 
 [lint]
 select = [

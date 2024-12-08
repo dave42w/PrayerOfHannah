@@ -242,7 +242,13 @@ class Verse(Base):
 
     song_book_item: Mapped["Song_Book_Item"] = relationship(back_populates="verses")  # type: ignore[misc]
 
-    _table_args__ = (ForeignKeyConstraint([song_book_id, song_id], [Song_Book_Item.song_book_id, Song_Book_Item.song_id], name="fk_verse_to_song_book_item"),)
+    _table_args__ = (
+        ForeignKeyConstraint(
+            [song_book_id, song_id],
+            [Song_Book_Item.song_book_id, Song_Book_Item.song_id],
+            name="fk_verse_to_song_book_item",
+        ),
+    )
 
 
 class Presentation(Base):

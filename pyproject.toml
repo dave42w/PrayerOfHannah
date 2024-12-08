@@ -17,5 +17,3 @@ dependencies = [
 
 [tool.mypy]
 mypy_path = "src:tests"
-
-#[tool.uv.sources]

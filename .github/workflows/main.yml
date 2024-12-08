@@ -1,16 +1,12 @@
-  - name: ruff-action
-  # You may pin to the exact commit or the version.
-  # uses: astral-sh/ruff-action@f2e32211077f40bfeab40e16285216924ebea4cb
-  uses: astral-sh/ruff-action@v2.0.0
+- name: Install the latest version of ruff
+  uses: astral-sh/ruff-action@v2
   with:
-    # Arguments passed to Ruff. Use `ruff --help` to see available options. Defaults to `check`.
-    args: # optional, default is check
-    # Source to run Ruff. Defaults to the current directory.
-    src: # optional, default is ${{ github.workspace }}
-    # The version of Ruff to use, e.g., `0.6.0` Defaults to the latest version.
-    version: # optional, default is latest
-    # The checksum of the ruff version to install
-    checksum: # optional
-    # Used to increase the rate limit when retrieving versions and downloading ruff.
-    github-token: # optional, default is ${{ github.token }}
-          
+    version: latest
+- name: Check with ruff
+  uses: astral-sh/ruff-action@v2
+  with:
+    args: check
+- name: Format with ruff
+  uses: astral-sh/ruff-action@v2
+  with:
+    args: format

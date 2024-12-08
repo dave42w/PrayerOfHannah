@@ -296,7 +296,7 @@ class Page_Song(Base):
     __tablename__: str = "page_song"
     page_id: Mapped[int] = mapped_column(ForeignKey("page.id"), primary_key=True, init=False)  # type: ignore[misc]
     song_id: Mapped[int] = mapped_column(ForeignKey("song.id"), init=False)
-    author_id: Mapped[int] = mapped_column()
+    author_id: Mapped[int] = mapped_column()  # type: ignore[misc]
 
     page: Mapped["Page"] = relationship(back_populates="songs")  # type: ignore[misc]
 

@@ -11,7 +11,7 @@ e: Engine = create_engine("sqlite:///:memory:", echo=False)
 Base.metadata.create_all(e)
 
 with Session(e) as session:
-    surname: str ="AddWarnock"
+    surname: str = "AddWarnock"
     first_names: str = "AddDave Z"
     display_name: str = f"{surname}, {first_names}"
     expected_len: int = 1

@@ -10,19 +10,21 @@ import pytest
 from dbs.models import Base
 from dbs.models import Author
 
+
 @pytest.fixture
 def dbe():
     def _dbe() -> Engine:
         e: Engine = create_engine("sqlite:///:memory:", echo=False)
         Base.metadata.create_all(e)
         return e
+
     return _dbe
 
 
 def test_add_author(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        surname: str ="AddWarnock"
+        surname: str = "AddWarnock"
         first_names: str = "AddDave Z"
         display_name: str = f"{surname}, {first_names}"
         expected_len: int = 1
@@ -46,7 +48,7 @@ def test_add_author(dbe) -> None:
 def test_delete_author(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        surname: str ="DelWarnock"
+        surname: str = "DelWarnock"
         first_names: str = "DelDave Z"
         expected_len1: int = 1
         expected_len3: int = 0
@@ -72,9 +74,9 @@ def test_delete_author(dbe) -> None:
 def test_update_author(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        surname: str ="UpdWarnock"
+        surname: str = "UpdWarnock"
         first_names: str = "UpdDave Z"
-        surname_upd: str ="NotUpdWarnock"
+        surname_upd: str = "NotUpdWarnock"
         first_names_upd: str = "NotUpdDave Z"
         display_name_upd: str = f"{surname_upd}, {first_names_upd}"
         expected_len: int = 1
@@ -85,8 +87,8 @@ def test_update_author(dbe) -> None:
 
         s2: ScalarResult[Author] = session.scalars(select(Author))
         r2: Author = cast(Author, s2.first())
-        r2.surname=surname_upd
-        r2.first_names=first_names_upd
+        r2.surname = surname_upd
+        r2.first_names = first_names_upd
         session.commit()
 
         s3: ScalarResult[Author] = session.scalars(select(Author))
@@ -104,7 +106,7 @@ def test_update_author(dbe) -> None:
 def test_no_duplicate_author(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        surname: str ="DupWarnock"
+        surname: str = "DupWarnock"
         first_names: str = "DupDave Z"
         display_name: str = f"{surname}, {first_names}"
         expected_len: int = 1

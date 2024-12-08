@@ -10,19 +10,21 @@ import pytest
 from dbs.models import Base
 from dbs.models import Song_Book
 
+
 @pytest.fixture
 def dbe():
     def _dbe() -> Engine:
         e: Engine = create_engine("sqlite:///:memory:", echo=False)
         Base.metadata.create_all(e)
         return e
+
     return _dbe
 
 
 def test_add_song_book(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        code: str ="AddStF"
+        code: str = "AddStF"
         name: str = "AddSinging the Faith"
         url: str | None = None
         expected_len: int = 1
@@ -45,7 +47,7 @@ def test_add_song_book(dbe) -> None:
 def test_add_song_book_with_url(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        code: str ="AddUrlStF"
+        code: str = "AddUrlStF"
         name: str = "AddUrlSinging the Faith"
         url: str = "AddUrl"
         expected_len: int = 1
@@ -68,7 +70,7 @@ def test_add_song_book_with_url(dbe) -> None:
 def test_delete_song_book(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        code: str ="DelStF"
+        code: str = "DelStF"
         name: str = "DelSinging the Faith"
         url: str | None = None
         expected_len1: int = 1
@@ -95,10 +97,10 @@ def test_delete_song_book(dbe) -> None:
 def test_update_song_book(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        code: str ="UpdStF"
+        code: str = "UpdStF"
         name: str = "UpdSinging the Faith"
         url: str | None = None
-        code_upd: str ="NotUpdStF"
+        code_upd: str = "NotUpdStF"
         name_upd: str = "NotUpdSinging the Faith"
         expected_len: int = 1
 
@@ -108,8 +110,8 @@ def test_update_song_book(dbe) -> None:
 
         s2: ScalarResult[Song_Book] = session.scalars(select(Song_Book))
         r2: Song_Book = cast(Song_Book, s2.first())
-        r2.code=code_upd
-        r2.name=name_upd
+        r2.code = code_upd
+        r2.name = name_upd
         session.commit()
 
         s3: ScalarResult[Song_Book] = session.scalars(select(Song_Book))
@@ -125,7 +127,7 @@ def test_update_song_book(dbe) -> None:
 def test_no_duplicate_song_book_code(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        code: str ="DupStF"
+        code: str = "DupStF"
         name: str = "DupSinging the Faith"
         name2: str = "DupSinging the Faith2"
         url: str | None = None
@@ -154,8 +156,8 @@ def test_no_duplicate_song_book_code(dbe) -> None:
 def test_no_duplicate_song_book_name(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        code: str ="DupStF"
-        code2: str ="DupStF2"
+        code: str = "DupStF"
+        code2: str = "DupStF2"
         name: str = "DupSinging the Faith"
         url: str | None = None
         expected_len: int = 1

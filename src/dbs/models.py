@@ -18,18 +18,21 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from enum import StrEnum
 
-class VerseType(StrEnum):
-    VERSE = 'v'
-    CHORUS = 'c'
-    BRIDGE = 'b'
-    ENDING = 'e'
 
-class SlideType(StrEnum):
-    SONG = 's'
-    IMAGE = 'i'
-    VIDEO = 'v'
-    AUDIO = 'a'
-    TEXT = 't'
+class VerseType(StrEnum):
+    VERSE = "v"
+    CHORUS = "c"
+    BRIDGE = "b"
+    ENDING = "e"
+
+
+class PageType(StrEnum):
+    SONG = "s"
+    IMAGE = "i"
+    VIDEO = "v"
+    AUDIO = "a"
+    TEXT = "t"
+
 
 class Base(MappedAsDataclass, DeclarativeBase):
     type_annotation_map = {
@@ -37,7 +40,7 @@ class Base(MappedAsDataclass, DeclarativeBase):
     }
 
 
-'''
+"""
 Db structure
 
 ----------                 -----------
@@ -77,7 +80,8 @@ enumerated type to control what is displayed
 (BI=Background image, V=Video without lyrics, VL=Video with Lyrics, A=Audio only, AS=Audio with Singing, BV=Background video)
 They also have a tune name and a verse count
 
-'''
+"""
+
 
 class Author(Base):
     """
@@ -96,19 +100,20 @@ class Author(Base):
         All the songs by this author
 
     """
+
     __tablename__: str = "author"
 
     __table_args__ = (UniqueConstraint("surname", "first_names", name="unique_author_surname_first_names"),)
 
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    surname: Mapped[str] = mapped_column(String(50))                        # type: ignore[misc]
-    first_names: Mapped[str] = mapped_column(String(50))                    # type: ignore[misc]
+    surname: Mapped[str] = mapped_column(String(50))  # type: ignore[misc]
+    first_names: Mapped[str] = mapped_column(String(50))  # type: ignore[misc]
 
-    songs: Mapped[List["Author_Song"]] = relationship(back_populates="author")     # type: ignore[misc]
+    songs: Mapped[List["Author_Song"]] = relationship(back_populates="author")  # type: ignore[misc]
 
     @hybrid_property
     def display_name(self):
-        return (f"{self.surname}, {self.first_names}")
+        return f"{self.surname}, {self.first_names}"
 
 
 class Song_Book(Base):
@@ -130,13 +135,14 @@ class Song_Book(Base):
         All the songs in this book
 
     """
+
     __tablename__: str = "song_book"
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    code: Mapped[str] = mapped_column(String(10), index=True, unique=True)              # type: ignore[misc]
-    name: Mapped[str] = mapped_column(String(50), index=True, unique=True)              # type: ignore[misc]
-    url: Mapped[Optional[str]] = mapped_column(String(200), index=True, unique=True)    # type: ignore[misc]
+    code: Mapped[str] = mapped_column(String(10), index=True, unique=True)  # type: ignore[misc]
+    name: Mapped[str] = mapped_column(String(50), index=True, unique=True)  # type: ignore[misc]
+    url: Mapped[Optional[str]] = mapped_column(String(200), index=True, unique=True)  # type: ignore[misc]
 
-    songs: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song_book")    # type: ignore[misc]
+    songs: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song_book")  # type: ignore[misc]
 
 
 class Song(Base):
@@ -155,13 +161,13 @@ class Song(Base):
     song_book_items : list[song_book_item]
         All the songs in this book
     """
+
     __tablename__: str = "song"
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    title: Mapped[str] = mapped_column(String(100), index=True, unique=True)                # type: ignore[misc]
+    title: Mapped[str] = mapped_column(String(100), index=True, unique=True)  # type: ignore[misc]
 
-    authors: Mapped[List["Author_Song"]] = relationship(back_populates="song")              # type: ignore[misc]
-    song_books: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song")   # type: ignore[misc]
-
+    authors: Mapped[List["Author_Song"]] = relationship(back_populates="song")  # type: ignore[misc]
+    song_books: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song")  # type: ignore[misc]
 
 
 class Author_Song(Base):
@@ -177,12 +183,14 @@ class Author_Song(Base):
         part of the Primary Key, foreign key to song
 
     """
+
     __tablename__: str = "author_song"
     author_id: Mapped[int] = mapped_column(ForeignKey("author.id"), primary_key=True, init=False)
     song_id: Mapped[int] = mapped_column(ForeignKey("song.id"), primary_key=True, init=False)
 
-    author: Mapped["Author"] = relationship(back_populates="songs")     # type: ignore[misc]
-    song: Mapped["Song"] = relationship(back_populates="authors")       # type: ignore[misc]
+    author: Mapped["Author"] = relationship(back_populates="songs")  # type: ignore[misc]
+    song: Mapped["Song"] = relationship(back_populates="authors")  # type: ignore[misc]
+
 
 class Song_Book_Item(Base):
     """
@@ -200,18 +208,20 @@ class Song_Book_Item(Base):
     verse_order : str
         the order verses are displayed (eg V1 C1 V2 B1 C1 V3 C1)
     """
+
     __tablename__: str = "song_book_item"
 
     song_book_id: Mapped[int] = mapped_column(ForeignKey("song_book.id"), primary_key=True, init=False)
     song_id: Mapped[int] = mapped_column(ForeignKey("song.id"), primary_key=True, init=False)
 
-    nbr: Mapped[int]                                                                    # type: ignore[misc]
-    verse_order: Mapped[Optional[str]] = mapped_column(String(50))                      # type: ignore[misc]
+    nbr: Mapped[int]  # type: ignore[misc]
+    verse_order: Mapped[Optional[str]] = mapped_column(String(50))  # type: ignore[misc]
 
-    song_book: Mapped["Song_Book"] = relationship(back_populates="songs")     # type: ignore[misc]
-    song: Mapped["Song"] = relationship(back_populates="song_books")               # type: ignore[misc]
+    song_book: Mapped["Song_Book"] = relationship(back_populates="songs")  # type: ignore[misc]
+    song: Mapped["Song"] = relationship(back_populates="song_books")  # type: ignore[misc]
 
-    verses: Mapped[List["Verse"]] = relationship(back_populates="song_book_item")       # type: ignore[misc]
+    verses: Mapped[List["Verse"]] = relationship(back_populates="song_book_item")  # type: ignore[misc]
+
 
 class Verse(Base):
     """
@@ -233,19 +243,19 @@ class Verse(Base):
     song_book_item : int
         foreign _key to song_book_item
     """
+
     __tablename__: str = "verse"
 
     song_book_id: Mapped[int] = mapped_column(primary_key=True, init=False)
     song_id: Mapped[int] = mapped_column(primary_key=True, init=False)
     type: Mapped[str] = mapped_column(String(1), primary_key=True, init=False)
     number: Mapped[int] = mapped_column(primary_key=True, init=False)
-    lyrics: Mapped[str] = mapped_column(String(3000))                        # type: ignore[misc]
+    lyrics: Mapped[str] = mapped_column(String(3000))  # type: ignore[misc]
 
-    song_book_item: Mapped["Song_Book_Item"] = relationship(back_populates="verses")    # type: ignore[misc]
+    song_book_item: Mapped["Song_Book_Item"] = relationship(back_populates="verses")  # type: ignore[misc]
 
-    _table_args__ = (
-                     ForeignKeyConstraint([song_book_id, song_id], [Song_Book_Item.song_book_id, Song_Book_Item.song_id], name="fk_verse_to_song_book_item"),
-                    )
+    _table_args__ = (ForeignKeyConstraint([song_book_id, song_id], [Song_Book_Item.song_book_id, Song_Book_Item.song_id], name="fk_verse_to_song_book_item"),)
+
 
 class Presentation(Base):
     """
@@ -258,83 +268,66 @@ class Presentation(Base):
         Primary Key, autoincremented
 
     """
+
     __tablename__: str = "presentation"
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    name: Mapped[str] = mapped_column(String(50), index=True, unique=True)              # type: ignore[misc]
-    when: Mapped[datetime.datetime]                                                     # type: ignore[misc]
+    name: Mapped[str] = mapped_column(String(50), index=True, unique=True)  # type: ignore[misc]
+    when: Mapped[datetime.datetime]  # type: ignore[misc]
 
-    slides: Mapped[List["Slide"]] = relationship(back_populates="presentation")     # type: ignore[misc]
+    pages: Mapped[List["Page"]] = relationship(back_populates="presentation")  # type: ignore[misc]
 
-class Slide(Base):
-    __tablename__: str = "slide"
-    presentation_id: Mapped[int] = mapped_column(ForeignKey("presentation.id"), primary_key=True, init=False)
-    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
-    slide_type: Mapped[str] = mapped_column(String(1))          # type: ignore[misc]
 
-    presentation: Mapped["Presentation"] = relationship(back_populates="slides")       # type: ignore[misc]
-    songs: Mapped[List["Slide_Song"]] = relationship(back_populates="slide")     # type: ignore[misc]
-    images: Mapped[List["Slide_Image"]] = relationship(back_populates="slide")     # type: ignore[misc]
-    videos: Mapped[List["Slide_Video"]] = relationship(back_populates="slide")     # type: ignore[misc]
-    audios: Mapped[List["Slide_Audio"]] = relationship(back_populates="slide")     # type: ignore[misc]
-    texts: Mapped[List["Slide_Text"]] = relationship(back_populates="slide")     # type: ignore[misc]
+class Page(Base):
+    __tablename__: str = "page"
+    id: Mapped[int] = mapped_column(primary_key=True, init=False)  # type: ignore[misc]
+    presentation_id: Mapped[int] = mapped_column(ForeignKey("presentation.id"), init=False)
+    type: Mapped[str] = mapped_column(String(1))  # type: ignore[misc]
+    title: Mapped[str] = mapped_column(String(100))  # type: ignore[misc]
 
-class Slide_Song(Base):
-    __tablename__: str = "slide_song"
-    presentation_id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
+    presentation: Mapped["Presentation"] = relationship(back_populates="pages")  # type: ignore[misc]
+    songs: Mapped[List["Page_Song"]] = relationship(back_populates="page")  # type: ignore[misc]
+    images: Mapped[List["Page_Image"]] = relationship(back_populates="page")  # type: ignore[misc]
+    videos: Mapped[List["Page_Video"]] = relationship(back_populates="page")  # type: ignore[misc]
+    audios: Mapped[List["Page_Audio"]] = relationship(back_populates="page")  # type: ignore[misc]
+    markdowns: Mapped[List["Page_Markdown"]] = relationship(back_populates="page")  # type: ignore[misc]
+
+
+class Page_Song(Base):
+    __tablename__: str = "page_song"
+    page_id: Mapped[int] = mapped_column(ForeignKey("page.id"), primary_key=True, init=False)  # type: ignore[misc]
     song_id: Mapped[int] = mapped_column(ForeignKey("song.id"), init=False)
+    author_id: Mapped[int] = mapped_column()
 
-    slide: Mapped["Slide"] = relationship(back_populates="songs")       # type: ignore[misc]
-
-    _table_args__ = (
-                     ForeignKeyConstraint([presentation_id, slide_nbr], [Slide.presentation_id, Slide.slide_nbr], name="fk_slide_song"),
-                    )
-
-class Slide_Image(Base):
-    __tablename__: str = "slide_image"
-    presentation_id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
-    image_filename: Mapped[str] = mapped_column(String(100))          # type: ignore[misc]
-
-    slide: Mapped["Slide"] = relationship(back_populates="images")       # type: ignore[misc]
-
-    _table_args__ = (
-                     ForeignKeyConstraint([presentation_id, slide_nbr], [Slide.presentation_id, Slide.slide_nbr], name="fk_slide_image"),
-                    )
+    page: Mapped["Page"] = relationship(back_populates="songs")  # type: ignore[misc]
 
 
-class Slide_Video(Base):
-    __tablename__: str = "slide_video"
-    presentation_id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
-    video_filename: Mapped[str] = mapped_column(String(100))          # type: ignore[misc]
+class Page_Image(Base):
+    __tablename__: str = "page_image"
+    page_id: Mapped[int] = mapped_column(ForeignKey("page.id"), primary_key=True, init=False)  # type: ignore[misc]
+    image_filename: Mapped[str] = mapped_column(String(100))  # type: ignore[misc]
 
-    slide: Mapped["Slide"] = relationship(back_populates="videos")       # type: ignore[misc]
+    page: Mapped["Page"] = relationship(back_populates="images")  # type: ignore[misc]
 
-    _table_args__ = (
-                     ForeignKeyConstraint([presentation_id, slide_nbr], [Slide.presentation_id, Slide.slide_nbr], name="fk_slide_video"),
-                    )
 
-class Slide_Audio(Base):
-    __tablename__: str = "slide_audio"
-    presentation_id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
-    audio_filename: Mapped[str] = mapped_column(String(100))          # type: ignore[misc]
+class Page_Video(Base):
+    __tablename__: str = "page_video"
+    page_id: Mapped[int] = mapped_column(ForeignKey("page.id"), primary_key=True, init=False)  # type: ignore[misc]
+    video_filename: Mapped[str] = mapped_column(String(100))  # type: ignore[misc]
 
-    slide: Mapped["Slide"] = relationship(back_populates="audios")       # type: ignore[misc]
+    page: Mapped["Page"] = relationship(back_populates="videos")  # type: ignore[misc]
 
-    _table_args__ = (
-                     ForeignKeyConstraint([presentation_id, slide_nbr], [Slide.presentation_id, Slide.slide_nbr], name="fk_slide_audio"),
-                    )
 
-class Slide_Text(Base):
-    __tablename__: str = "slide_text"
-    presentation_id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    slide_nbr: Mapped[int] = mapped_column(primary_key=True)    # type: ignore[misc]
-    md_text: Mapped[str] = mapped_column(String(3000))          # type: ignore[misc]
+class Page_Audio(Base):
+    __tablename__: str = "page_audio"
+    page_id: Mapped[int] = mapped_column(ForeignKey("page.id"), primary_key=True, init=False)  # type: ignore[misc]
+    audio_filename: Mapped[str] = mapped_column(String(100))  # type: ignore[misc]
 
-    slide: Mapped["Slide"] = relationship(back_populates="texts")       # type: ignore[misc]
+    page: Mapped["Page"] = relationship(back_populates="audios")  # type: ignore[misc]
 
-    _table_args__ = (
-                     ForeignKeyConstraint([presentation_id, slide_nbr], [Slide.presentation_id, Slide.slide_nbr], name="fk_slide_text"),
-                    )
+
+class Page_Markdown(Base):
+    __tablename__: str = "page_markdown"
+    page_id: Mapped[int] = mapped_column(ForeignKey("page.id"), primary_key=True, init=False)  # type: ignore[misc]
+    markdown_text: Mapped[str] = mapped_column(String(3000))  # type: ignore[misc]
+
+    page: Mapped["Page"] = relationship(back_populates="markdowns")  # type: ignore[misc]

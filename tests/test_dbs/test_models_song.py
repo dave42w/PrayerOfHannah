@@ -10,19 +10,21 @@ import pytest
 from dbs.models import Base
 from dbs.models import Song
 
+
 @pytest.fixture
 def dbe():
     def _dbe() -> Engine:
         e: Engine = create_engine("sqlite:///:memory:", echo=False)
         Base.metadata.create_all(e)
         return e
+
     return _dbe
 
 
 def test_add_song(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        title: str ="AddAnd Can It Be"
+        title: str = "AddAnd Can It Be"
         expected_len: int = 1
 
         a1: Song = Song(title=title, authors=[], song_books=[])
@@ -42,7 +44,7 @@ def test_add_song(dbe) -> None:
 def test_delete_song(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        title: str ="DelAnd Can It Be"
+        title: str = "DelAnd Can It Be"
         expected_len1: int = 1
         expected_len3: int = 0
 
@@ -67,8 +69,8 @@ def test_delete_song(dbe) -> None:
 def test_update_song(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        title: str ="UpdAnd Can It Be"
-        title_upd: str ="NotUpdAnd Can It Be"
+        title: str = "UpdAnd Can It Be"
+        title_upd: str = "NotUpdAnd Can It Be"
         expected_len: int = 1
 
         a1: Song = Song(title=title, authors=[], song_books=[])
@@ -77,7 +79,7 @@ def test_update_song(dbe) -> None:
 
         s2: ScalarResult[Song] = session.scalars(select(Song))
         r2: Song = cast(Song, s2.first())
-        r2.title=title_upd
+        r2.title = title_upd
         session.commit()
 
         s3: ScalarResult[Song] = session.scalars(select(Song))
@@ -93,7 +95,7 @@ def test_update_song(dbe) -> None:
 def test_no_duplicate_song(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        title: str ="DupAnd Can It Be"
+        title: str = "DupAnd Can It Be"
         expected_len: int = 1
 
         a1: Song = Song(title=title, authors=[], song_books=[])

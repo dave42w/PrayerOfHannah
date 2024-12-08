@@ -11,22 +11,24 @@ import pytest
 from dbs.models import Base
 from dbs.models import Author, Song, Author_Song
 
+
 @pytest.fixture
 def dbe():
     def _dbe() -> Engine:
         e: Engine = create_engine("sqlite:///:memory:", echo=False)
         Base.metadata.create_all(e)
         return e
+
     return _dbe
 
 
 def test_add_author_song(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        surname: str ="AddWarnock"
+        surname: str = "AddWarnock"
         first_names: str = "AddDave Z"
         display_name: str = f"{surname}, {first_names}"
-        title: str ="AddAnd Can It Be"
+        title: str = "AddAnd Can It Be"
         expected_len: int = 1
 
         author1: Author = Author(surname=surname, first_names=first_names, songs=[])
@@ -59,7 +61,7 @@ def test_add_author_song(dbe) -> None:
         assert l3 == expected_len, f"Author Count is {l3} should be {expected_len}"
 
         # check from Author to Song
-        s4: ScalarResult[Author] = session.scalars(select(Author).where(Author.id==aid))
+        s4: ScalarResult[Author] = session.scalars(select(Author).where(Author.id == aid))
         r4: Author = cast(Author, s4.first())
         assert r4.id == aid, "author id is {r4.id} should be {aid}"
         assert r4.surname == surname, "author Surname is {r4.surname} should be {surname}"
@@ -74,7 +76,7 @@ def test_add_author_song(dbe) -> None:
         assert song.title == title, f"Title is {song.title} should be {title}"
 
         # check from Song to Author
-        s5: ScalarResult[Song] = session.scalars(select(Song).where(Song.id==sid))
+        s5: ScalarResult[Song] = session.scalars(select(Song).where(Song.id == sid))
         r5: Song = cast(Song, s5.first())
         assert r5.id == sid, "Song id is {r5.id} should be {sid}"
         assert r5.title == title, "song title is {r5.title} should be {title}"
@@ -86,12 +88,13 @@ def test_add_author_song(dbe) -> None:
         author: Author = author_songs[0].author
         assert author.display_name == display_name, f"Display Name is {author.display_name} should be {display_name}"
 
+
 def test_del_author_song(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        surname: str ="DelWarnock"
+        surname: str = "DelWarnock"
         first_names: str = "DelDave Z"
-        title: str ="DelAnd Can It Be"
+        title: str = "DelAnd Can It Be"
         expected_len: int = 1
 
         author1: Author = Author(surname=surname, first_names=first_names, songs=[])
@@ -123,7 +126,7 @@ def test_del_author_song(dbe) -> None:
         l3 = len(s3.all())
         assert l3 == expected_len, f"Author Count is {l3} should be {expected_len}"
 
-        s4: ScalarResult[Author_Song] = session.scalars(select(Author_Song).where(Author_Song.author_id==aid, Author_Song.song_id==sid))
+        s4: ScalarResult[Author_Song] = session.scalars(select(Author_Song).where(Author_Song.author_id == aid, Author_Song.song_id == sid))
         r4: Author_Song = cast(Author_Song, s4.first())
         session.delete(r4)
 
@@ -141,11 +144,11 @@ def test_del_author_song(dbe) -> None:
         assert l7 == expected_len, f"Song Count is {l7} should be {expected_len}"
 
         # check Songs is empty in Author
-        s8: ScalarResult[Author] = session.scalars(select(Author).where(Author.id==aid))
+        s8: ScalarResult[Author] = session.scalars(select(Author).where(Author.id == aid))
         r8: Author = cast(Author, s8.first())
         assert not r8.songs, "Should have empty songs"
 
         # check Authors is empty in Songs
-        s9: ScalarResult[Song] = session.scalars(select(Song).where(Song.id==sid))
+        s9: ScalarResult[Song] = session.scalars(select(Song).where(Song.id == sid))
         r9: Song = cast(Song, s9.first())
         assert not r9.authors, "Should have empty authors"

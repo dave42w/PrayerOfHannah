@@ -10,23 +10,25 @@ import pytest
 from dbs.models import Base
 from dbs.models import Presentation
 
+
 @pytest.fixture
 def dbe():
     def _dbe() -> Engine:
         e: Engine = create_engine("sqlite:///:memory:", echo=False)
         Base.metadata.create_all(e)
         return e
+
     return _dbe
 
 
 def test_add_presentation(dbe) -> None:
     e: Engine = dbe()
     with Session(e) as session:
-        name: str ="Lawton Moor"
+        name: str = "Lawton Moor"
         when = datetime.now()
         expected_len: int = 1
 
-        p1: Presentation = Presentation(name=name, when=when, slides=[])
+        p1: Presentation = Presentation(name=name, when=when, pages=[])
         session.add(p1)
         session.commit()
 

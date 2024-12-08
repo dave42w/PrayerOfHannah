@@ -1,6 +1,5 @@
 import datetime
 from enum import StrEnum
-from typing import List, Optional
 
 from sqlalchemy import TIMESTAMP, String
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -98,7 +97,7 @@ class Author(Base):
     surname: Mapped[str] = mapped_column(String(50))  # type: ignore[misc]
     first_names: Mapped[str] = mapped_column(String(50))  # type: ignore[misc]
 
-    songs: Mapped[List["Author_Song"]] = relationship(back_populates="author")  # type: ignore[misc]
+    songs: Mapped[list["Author_Song"]] = relationship(back_populates="author")  # type: ignore[misc]
 
     @hybrid_property
     def display_name(self):
@@ -129,9 +128,9 @@ class Song_Book(Base):
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     code: Mapped[str] = mapped_column(String(10), index=True, unique=True)  # type: ignore[misc]
     name: Mapped[str] = mapped_column(String(50), index=True, unique=True)  # type: ignore[misc]
-    url: Mapped[Optional[str]] = mapped_column(String(200), index=True, unique=True)  # type: ignore[misc]
+    url: Mapped[str | None] = mapped_column(String(200), index=True, unique=True)  # type: ignore[misc]
 
-    songs: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song_book")  # type: ignore[misc]
+    songs: Mapped[list["Song_Book_Item"]] = relationship(back_populates="song_book")  # type: ignore[misc]
 
 
 class Song(Base):
@@ -155,8 +154,8 @@ class Song(Base):
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     title: Mapped[str] = mapped_column(String(100), index=True, unique=True)  # type: ignore[misc]
 
-    authors: Mapped[List["Author_Song"]] = relationship(back_populates="song")  # type: ignore[misc]
-    song_books: Mapped[List["Song_Book_Item"]] = relationship(back_populates="song")  # type: ignore[misc]
+    authors: Mapped[list["Author_Song"]] = relationship(back_populates="song")  # type: ignore[misc]
+    song_books: Mapped[list["Song_Book_Item"]] = relationship(back_populates="song")  # type: ignore[misc]
 
 
 class Author_Song(Base):
@@ -204,12 +203,12 @@ class Song_Book_Item(Base):
     song_id: Mapped[int] = mapped_column(ForeignKey("song.id"), primary_key=True, init=False)
 
     nbr: Mapped[int]  # type: ignore[misc]
-    verse_order: Mapped[Optional[str]] = mapped_column(String(50))  # type: ignore[misc]
+    verse_order: Mapped[str | None] = mapped_column(String(50))  # type: ignore[misc]
 
     song_book: Mapped["Song_Book"] = relationship(back_populates="songs")  # type: ignore[misc]
     song: Mapped["Song"] = relationship(back_populates="song_books")  # type: ignore[misc]
 
-    verses: Mapped[List["Verse"]] = relationship(back_populates="song_book_item")  # type: ignore[misc]
+    verses: Mapped[list["Verse"]] = relationship(back_populates="song_book_item")  # type: ignore[misc]
 
 
 class Verse(Base):
@@ -263,7 +262,7 @@ class Presentation(Base):
     name: Mapped[str] = mapped_column(String(50), index=True, unique=True)  # type: ignore[misc]
     when: Mapped[datetime.datetime]  # type: ignore[misc]
 
-    pages: Mapped[List["Page"]] = relationship(back_populates="presentation")  # type: ignore[misc]
+    pages: Mapped[list["Page"]] = relationship(back_populates="presentation")  # type: ignore[misc]
 
 
 class Page(Base):
@@ -274,11 +273,11 @@ class Page(Base):
     title: Mapped[str] = mapped_column(String(100))  # type: ignore[misc]
 
     presentation: Mapped["Presentation"] = relationship(back_populates="pages")  # type: ignore[misc]
-    songs: Mapped[List["Page_Song"]] = relationship(back_populates="page")  # type: ignore[misc]
-    images: Mapped[List["Page_Image"]] = relationship(back_populates="page")  # type: ignore[misc]
-    videos: Mapped[List["Page_Video"]] = relationship(back_populates="page")  # type: ignore[misc]
-    audios: Mapped[List["Page_Audio"]] = relationship(back_populates="page")  # type: ignore[misc]
-    markdowns: Mapped[List["Page_Markdown"]] = relationship(back_populates="page")  # type: ignore[misc]
+    songs: Mapped[list["Page_Song"]] = relationship(back_populates="page")  # type: ignore[misc]
+    images: Mapped[list["Page_Image"]] = relationship(back_populates="page")  # type: ignore[misc]
+    videos: Mapped[list["Page_Video"]] = relationship(back_populates="page")  # type: ignore[misc]
+    audios: Mapped[list["Page_Audio"]] = relationship(back_populates="page")  # type: ignore[misc]
+    markdowns: Mapped[list["Page_Markdown"]] = relationship(back_populates="page")  # type: ignore[misc]
 
 
 class Page_Song(Base):

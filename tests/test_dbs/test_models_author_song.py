@@ -1,4 +1,4 @@
-from typing import List, cast
+from typing import cast
 
 import pytest
 from sqlalchemy import create_engine, select
@@ -65,7 +65,7 @@ def test_add_author_song(dbe) -> None:
         assert r4.display_name == display_name, "author display_name is {r4.display_name} should be {display_name}"
         assert r4.songs, "Should not have empty songs"
 
-        author_songs: List[Author_Song] = r4.songs
+        author_songs: list[Author_Song] = r4.songs
         l4 = len(author_songs)
         assert l4 == expected_len, f"Count is {l4} should be {expected_len}"
         song: Song = author_songs[0].song
@@ -78,7 +78,7 @@ def test_add_author_song(dbe) -> None:
         assert r5.title == title, "song title is {r5.title} should be {title}"
         assert r5.authors, "Should not have empty authors"
 
-        author_songs2: List[Author_Song] = r5.authors
+        author_songs2: list[Author_Song] = r5.authors
         l5 = len(author_songs2)
         assert l5 == expected_len, f"Count is {l5} should be {expected_len}"
         author: Author = author_songs[0].author

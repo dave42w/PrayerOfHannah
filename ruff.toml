@@ -1,0 +1,20 @@
+# Support Python 3.12+.
+target-version = "py312"
+# Set the maximum line length to 160.
+line-length = 160
+
+[lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]

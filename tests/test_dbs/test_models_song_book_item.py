@@ -1,12 +1,9 @@
+import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
-import pytest
 
-from dbs.models import Base
-from dbs.models import Song
-from dbs.models import Song_Book
-from dbs.models import Song_Book_Item
+from dbs.models import Base, Song, Song_Book, Song_Book_Item
 
 
 @pytest.fixture

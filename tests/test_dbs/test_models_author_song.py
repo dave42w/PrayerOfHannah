@@ -1,15 +1,11 @@
-from typing import cast
-from typing import List
+from typing import List, cast
 
-from sqlalchemy import create_engine
-from sqlalchemy import select
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session
-from sqlalchemy.engine import ScalarResult
 import pytest
+from sqlalchemy import create_engine, select
+from sqlalchemy.engine import Engine, ScalarResult
+from sqlalchemy.orm import Session
 
-from dbs.models import Base
-from dbs.models import Author, Song, Author_Song
+from dbs.models import Author, Author_Song, Base, Song
 
 
 @pytest.fixture

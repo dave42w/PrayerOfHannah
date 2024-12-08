@@ -1,8 +1,8 @@
-from sqlalchemy.engine import Engine
 from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
-from dbs.models import Base
-from dbs.models import Author
+
+from dbs.models import Author, Base
 
 print("Hello world")
 

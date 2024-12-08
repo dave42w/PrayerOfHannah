@@ -1,22 +1,11 @@
 import datetime
-
-from typing import Optional
-from typing import List
-
-from sqlalchemy import String, TIMESTAMP
-
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import MappedAsDataclass
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
-
-from sqlalchemy.schema import UniqueConstraint, ForeignKeyConstraint
-from sqlalchemy.schema import ForeignKey
-
-from sqlalchemy.ext.hybrid import hybrid_property
-
 from enum import StrEnum
+from typing import List, Optional
+
+from sqlalchemy import TIMESTAMP, String
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import DeclarativeBase, Mapped, MappedAsDataclass, mapped_column, relationship
+from sqlalchemy.schema import ForeignKey, ForeignKeyConstraint, UniqueConstraint
 
 
 class VerseType(StrEnum):

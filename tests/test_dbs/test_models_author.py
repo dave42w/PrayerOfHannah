@@ -1,14 +1,12 @@
 from typing import cast
-from sqlalchemy import create_engine
-from sqlalchemy import select
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session
-from sqlalchemy.engine import ScalarResult
-from sqlalchemy.exc import IntegrityError
-import pytest
 
-from dbs.models import Base
-from dbs.models import Author
+import pytest
+from sqlalchemy import create_engine, select
+from sqlalchemy.engine import Engine, ScalarResult
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
+
+from dbs.models import Author, Base
 
 
 @pytest.fixture

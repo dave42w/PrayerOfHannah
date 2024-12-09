@@ -8,10 +8,7 @@ jobs:
       - uses: astral-sh/ruff-action@v2
         with:
           version: latest
-          args: "check --fix"
+          args: "check"
       - uses: astral-sh/ruff-action@v2
         with:
-          args: "format"
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: 'style fixes by ruff'
+          args: "format --check"

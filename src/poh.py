@@ -1,4 +1,4 @@
-from robyn import Request, Robyn
+from robyn import Robyn, Request
 
 app = Robyn(__file__)
 

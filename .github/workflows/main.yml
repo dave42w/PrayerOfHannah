@@ -8,8 +8,6 @@ jobs:
       - uses: astral-sh/ruff-action@v2
         with:
           version: "latest"
-      - uses: astral-sh/ruff-action@v2
-        with:
           args: "check --fix"
       - uses: astral-sh/ruff-action@v2
         with:

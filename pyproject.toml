@@ -8,13 +8,17 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.12.7"
 dependencies = [
-    "pytest-cov>=6.0.0",
-    "pytest-randomly>=3.16.0",
-    "pytest>=8.3.4",
     "robyn[templating]>=0.64.2",
     "sqlalchemy>=2.0.36",
-    "pre-commit>=4.0.1",
 ]
 
 [tool.mypy]
 mypy_path = "src:tests"
+
+[dependency-groups]
+dev = [
+    "pytest-cov>=6.0.0",
+    "pytest>=8.3.4",
+    "pytest-randomly>=3.16.0",
+    "pre-commit>=4.0.1",
+]

@@ -1,21 +1,16 @@
-from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session
+from robyn import Request, Robyn
 
-from dbs.models import Author, Base
-
-print("Hello world")
+app = Robyn(__file__)
 
 
-e: Engine = create_engine("sqlite:///:memory:", echo=False)
-Base.metadata.create_all(e)
+@app.get("/")
+def h(request: Request):
+    return "Hello, world"
 
-with Session(e) as session:
-    surname: str = "AddWarnock"
-    first_names: str = "AddDave Z"
-    display_name: str = f"{surname}, {first_names}"
-    expected_len: int = 1
 
-    a1: Author = Author(surname=surname, first_names=first_names, songs=[])
-    session.add(a1)
-    session.commit()
+def main():
+    app.start(port=8080, host="0.0.0.0")
+
+
+if __name__ == "__main__":
+    main()
